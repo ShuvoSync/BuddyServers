@@ -443,7 +443,7 @@ class ScriptObject():
         self.src_dict = {}
         self.function_dict = {}
 
-        self._send_log(f'initialized BuddyScript runtime engine v{constants.ams_version}', 'info')
+        self._send_log(f'initialized BuddyScript runtime engine v{constants.buddyscript_version}', 'info')
 
 
     def __del__(self):
@@ -1094,7 +1094,7 @@ class ScriptObject():
         only_base = False
 
         if total_count > 0:
-            self.server.amscript_log(f'[amscript v{constants.ams_version}] compiling {len(self.scripts)} scripts, please wait...', 'info')
+            self.server.amscript_log(f'[buddyscript v{constants.buddyscript_version}] compiling {len(self.scripts)} scripts, please wait...', 'info')
             self._send_log(f'compiling {len(self.scripts)} scripts...', 'info')
         else:
             only_base = True
@@ -1541,7 +1541,7 @@ class ServerScriptObject():
         self.stop = server_obj.stop
         self.log = server_obj.send_log
         self.aliases = {}
-        self.ams_version = constants.ams_version
+        self.buddyscript_version = constants.buddyscript_version
         try:
             self.output = server_obj.run_data['log']
         except KeyError:

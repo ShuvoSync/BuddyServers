@@ -64,9 +64,10 @@ if ($env:CI -eq $true) {
 
 
 # Global variables
-$python     = "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe"
+# Global variables
+$python     = "python"
 $venv_path  = ".\venv"
-$start_venv = "CALL $venv_path\Scripts\activate.bat"
+$start_venv = ".\venv\Scripts\Activate.ps1"
 $spec_file  = "BuddyServers.windows.spec"
 
 # Overwrite current directory
@@ -85,40 +86,48 @@ function error {
 
 
 # First, check if a valid version of Python 3.12 is installed
-try { $version = Invoke-Command { cmd /c "`"$python`" --version 2^> nul" } -ErrorAction Stop | Tee-Object -Variable result } catch { $version = $null }
-if (-not $version) {
+try { $version = Invoke-Command { cmd /c "python --version 2^> nul" } -ErrorAction SilentlyContinue } catch { $version = $null }
 
-    # Force script to be run as admin if it requires an installation
-    if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-        error "This script requires administrator privileges to install Python"
-    }
-
+if (-not $version -or $version -notmatch "3.12") {
     
-    # Download and install C++ Build Tools
-    echo "Downloading and installing C++ Build Tools"
-    $bt_url = "https://aka.ms/vs/17/release/vs_BuildTools.exe/"
-    $dest_bt = "$env:TEMP\build-tools.exe"
-    $arguments = "--norestart --passive --wait --downloadThenInstall --includeRecommended --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Workload.MSBuildTools"
-    echo "Downloading Build Tools to `"$dest_bt`""
-    Invoke-WebRequest -Uri $bt_url -OutFile $dest_bt
+    # Try hardcoded path as fallback
+    $python = "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe"
+    try { $version = Invoke-Command { cmd /c "`"$python`" --version 2^> nul" } -ErrorAction SilentlyContinue } catch { $version = $null }
 
-    echo "Installing Build Tools"
-    Start-Process -FilePath $dest_bt -ArgumentList $arguments -Wait
+    if (-not $version) {
+
+        # Force script to be run as admin if it requires an installation
+        if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+            error "This script requires administrator privileges to install Python"
+        }
+
+        
+        # Download and install C++ Build Tools
+        echo "Downloading and installing C++ Build Tools"
+        $bt_url = "https://aka.ms/vs/17/release/vs_BuildTools.exe/"
+        $dest_bt = "$env:TEMP\build-tools.exe"
+        $arguments = "--norestart --passive --wait --downloadThenInstall --includeRecommended --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Workload.MSBuildTools"
+        echo "Downloading Build Tools to `"$dest_bt`""
+        Invoke-WebRequest -Uri $bt_url -OutFile $dest_bt
+
+        echo "Installing Build Tools"
+        Start-Process -FilePath $dest_bt -ArgumentList $arguments -Wait
 
 
-    # Download and install Python 3.12
-    $python_down_ver = "3.12.8"
-    echo "Downloading and installing Python $python_down_ver"
-    $python_url = "https://www.python.org/ftp/python/$python_down_ver/python-$python_down_ver-amd64.exe"
-    $dest_py = "$env:TEMP\python_installer-$python_down_ver.exe"
-    echo "Downloading Python to `"$dest_py`""
-    Invoke-WebRequest -Uri $python_url -OutFile $dest_py
+        # Download and install Python 3.12
+        $python_down_ver = "3.12.8"
+        echo "Downloading and installing Python $python_down_ver"
+        $python_url = "https://www.python.org/ftp/python/$python_down_ver/python-$python_down_ver-amd64.exe"
+        $dest_py = "$env:TEMP\python_installer-$python_down_ver.exe"
+        echo "Downloading Python to `"$dest_py`""
+        Invoke-WebRequest -Uri $python_url -OutFile $dest_py
 
-    echo "Installing Python"
-    Start-Process -FilePath $dest_py -ArgumentList "/S" -Wait
+        echo "Installing Python"
+        Start-Process -FilePath $dest_py -ArgumentList "/S" -Wait
 
-    if (-not (Test-Path $python)) {
-        error "Something went wrong installing Python, please try again"
+        if (-not (Test-Path $python)) {
+            error "Something went wrong installing Python, please try again"
+        }
     }
 }
 

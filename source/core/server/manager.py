@@ -1831,7 +1831,7 @@ class ServerObject():
 
     # Returns data from amscript
     def get_ams_info(self):
-        return {'version': ams_version, 'installed': self.script_manager.installed_scripts}
+        return {'version': buddyscript_version, 'installed': self.script_manager.installed_scripts}
 
     # Methods strictly to send to amscript.ServerScriptObject
     # Castrated log function to prevent recursive events, sends only INFO, WARN, ERROR, and SUCC

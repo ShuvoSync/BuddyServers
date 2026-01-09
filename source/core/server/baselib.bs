@@ -295,7 +295,7 @@ def sleep_timer(delay, sleep_type):
         loaded = buddyscript.installed_scripts['enabled']
         unloaded = buddyscript.installed_scripts['disabled']
 
-        player.log(generate_header(f'BuddyScript v{server.ams_version}'), 'green', 'normal')
+        player.log(generate_header(f'BuddyScript v{server.buddyscript_version}'), 'green', 'normal')
         if len(loaded) > 0:
             player.log(f'{len(loaded)} enabled script(s):', 'white', 'normal')
             player.log(', '.join([script.file_name for script in loaded]), 'gray', 'normal')
