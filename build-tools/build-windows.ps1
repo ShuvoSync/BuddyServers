@@ -147,7 +147,7 @@ else { Write-Output "Detected virtual environment" }
 
 # Install/Upgrade packages
 Write-Output "Installing packages"
-cmd /c "$start_venv && pip install --prefer-binary --upgrade -r ./reqs-windows.txt"
+cmd /c "$start_venv && pip install -v --prefer-binary --upgrade -r ./reqs-windows.txt"
 
 
 # Patch and install Kivy hook for Pyinstaller
