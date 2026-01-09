@@ -1085,7 +1085,7 @@ class MenuTaskbar(RelativeLayout):
                                         while not constants.server_manager.current_server.addon:
                                             time.sleep(0.2)
 
-                                if self.data[-1] == 'ServerAmscriptScreen':
+                                if self.data[-1] == 'ServerBuddyScriptScreen':
                                     if not constants.server_manager.current_server.script_manager:
                                         while not constants.server_manager.current_server.script_manager:
                                             time.sleep(0.2)
@@ -1178,7 +1178,7 @@ class MenuTaskbar(RelativeLayout):
             ('back-ups', os.path.join(icon_path, 'backup.png'), '#56E6FF', 'ServerBackupScreen'),
             ('access control', os.path.join(icon_path, 'acl.png'), '#00FFB2', 'ServerAclScreen'),
             ('add-ons', os.path.join(icon_path, 'addon.png'), '#42FF5E', 'ServerAddonScreen'),
-            ('amscript', os.path.join(icon_path, 'amscript.png'), '#BFFF2B', 'ServerAmscriptScreen'),
+            ('buddyscript', os.path.join(icon_path, 'buddyscript.png'), '#BFFF2B', 'ServerBuddyScriptScreen'),
             ('settings', os.path.join(icon_path, 'advanced.png'), '#FFFF44', 'ServerSettingsScreen')
         ]
 

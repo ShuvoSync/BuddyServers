@@ -1,7 +1,7 @@
 title: Python
 author: Kaleb Efflandt
 version: 1.0
-description: Use the chat as a REPL for the amscript Python environment
+description: Use the chat as a REPL for the BuddyScript Python environment
 
 
 Usage:

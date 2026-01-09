@@ -1,6 +1,6 @@
 {
-	"name": "amscript",
-	"scopeName": "source.amscript",
+	"name": "buddyscript",
+	"scopeName": "source.buddyscript",
 	"patterns": [
 		{
 			"include": "#statement"

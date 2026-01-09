@@ -37,10 +37,10 @@ from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition, FadeTran
 
 
 # Local imports
-from source.core.server import foundry, manager, amscript, addons, backup, acl
+from source.core.server import foundry, manager, buddyscript, addons, backup, acl
 from source.core import constants, telepath, logger, audio
 from source.core.constants import paths, dTimer
-from source.ui import amseditor, logviewer
+from source.ui import buddyscript_editor, logviewer
 from source.core.constants import paths
 from source.core.translator import *
 
@@ -345,7 +345,7 @@ class DiscordPresenceManager():
 
                     details = None
                     state = None
-                    large = 'https://raw.githubusercontent.com/macarooni-man/BuddyServers/refs/heads/main/source/gui-assets/big-icon.png'
+                    large = 'https://raw.githubusercontent.com/ShuvoSync/BuddyServers/refs/heads/main/source/gui-assets/big-icon.png'
 
                     # Override for running server
                     if constants.server_manager.current_server and constants.server_manager.current_server.running and screen_manager.current == 'ServerViewScreen':
@@ -361,17 +361,22 @@ class DiscordPresenceManager():
                         if current: args = {'party_size': [int(current), int(server_obj.server_properties['max-players'])]}
                         else:       args = {}
 
-                        # Get server icon
-                        if server_obj.server_icon:
-                            if server_obj._telepath_data: icon_path = manager.get_server_icon(server_obj.name, server_obj._telepath_data)
-                            else:                         icon_path = server_obj.server_icon
-                            args['small_image'] = self._get_image(icon_path)
-                        else: args['small_image'] = f'https://github.com/macarooni-man/BuddyServers/blob/main/source/gui-assets/icons/big/{server_obj.type}_small.png?raw=true'
+                        large_text = f"BuddyServers v{constants.app_version}"
+                        if details == "Idle":
+                            large_text = f"BuddyServers v{constants.app_version}"
+                        elif 'Server' in details:
+                            large_text = "Running a Server"
 
-                        args['small_text'] = f"{server_obj.name} - {state}"
+                        # Set small image
+                        if server_obj: 
+                            if not server_obj.type in ('vanilla', 'fabric', 'forge', 'paper', 'spigot', 'bungeecord', 'velocity'):
+                                args['small_image'] = 'https://github.com/ShuvoSync/BuddyServers/blob/main/source/gui-assets/icons/big/modded_small.png?raw=true'
+                            else: args['small_image'] = f'https://github.com/ShuvoSync/BuddyServers/blob/main/source/gui-assets/icons/big/{server_obj.type}_small.png?raw=true'
+                            
+                            args['small_text'] = f'{server_obj.type.title()} {server_obj.version}'
 
                         # Safe update (presence may have been cleared by stop())
-                        self._send_update(state=state, details=details, start=self.start_time, large_image=large, **args)
+                        self._send_update(state=state, details=details, start=self.start_time, large_image=large, large_text=large_text, **args)
                         return True
 
 
@@ -380,17 +385,22 @@ class DiscordPresenceManager():
                         state = overrides[footer_path][1]
 
 
-                    elif 'amscript IDE' in footer_path:
+                    # Custom BuddyScript logic
+                    if state == "Editing a Script":
+                        args['small_image'] = 'https://github.com/ShuvoSync/BuddyServers/blob/main/source/gui-assets/buddyscript-icon.png?raw=true'
+                        args['small_text'] = 'BuddyScript IDE'
+                    
+                    elif 'buddyscript IDE' in footer_path:
                         details, state = footer_path.split(' > ', 1)
-                        image = 'https://github.com/macarooni-man/BuddyServers/blob/main/source/gui-assets/amscript-icon.png?raw=true'
-                        self._send_update(state=state, details=details, start=self.start_time, small_image=image, small_text='amscript IDE', large_image=large)
+                        image = 'https://github.com/ShuvoSync/BuddyServers/blob/main/source/gui-assets/buddyscript-icon.png?raw=true'
+                        self._send_update(state=state, details=details, start=self.start_time, small_image=image, small_text='BuddyScript IDE', large_image=large)
                         return True
 
 
                     elif 'Telepath' in footer_path:
                         if ' > ' in footer_path: details, state = footer_path.split(' > ', 1)
                         else:                    details, state = 'Telepath', self.splash
-                        image = 'https://github.com/macarooni-man/BuddyServers/blob/main/source/gui-assets/icons/telepath.png?raw=true'
+                        image = 'https://github.com/ShuvoSync/BuddyServers/blob/main/source/gui-assets/icons/telepath.png?raw=true'
                         self._send_update(state=state, details=details, start=self.start_time, small_image=image, small_text='Telepath', large_image=large)
                         return True
 

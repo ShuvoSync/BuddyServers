@@ -190,23 +190,23 @@ def button_action(button_name, button, specific_screen=''):
                             )
 
 
-        elif "ServerAmscriptScreen" in str(utility.screen_manager.current_screen):
+        elif "ServerBuddyScriptScreen" in str(utility.screen_manager.current_screen):
             script_manager = constants.server_manager.current_server.script_manager
 
             if "download" in button_name.lower():
-                utility.screen_manager.current = 'ServerAmscriptSearchScreen'
+                utility.screen_manager.current = 'ServerBuddyScriptSearchScreen'
 
             elif "create new" in button_name.lower():
-                utility.screen_manager.current = 'CreateAmscriptScreen'
+                utility.screen_manager.current = 'CreateBuddyScriptScreen'
 
             elif "import" in button_name.lower():
-                title = "Select amscripts (.ams)"
-                selection = file_popup("file", start_dir=paths.user_downloads, ext=["*.ams"], input_name=None, select_multiple=True, title=title)
+                title = "Select BuddyScripts (.bs)"
+                selection = file_popup("file", start_dir=paths.user_downloads, ext=["*.bs", "*.ams"], input_name=None, select_multiple=True, title=title)
 
                 if selection:
                     banner_text = ''
                     for script in selection:
-                        if script.endswith(".ams") and os.path.isfile(script):
+                        if (script.endswith(".ams") or script.endswith(".bs")) and os.path.isfile(script):
                             script = script_manager.import_script(script)
                             if not script:
                                 continue
@@ -233,7 +233,7 @@ def button_action(button_name, button, specific_screen=''):
                                 functools.partial(
                                     utility.screen_manager.current_screen.show_banner,
                                     (0.937, 0.831, 0.62, 1),
-                                    "An amscript reload is required to apply changes",
+                                    "A BuddyScript reload is required to apply changes",
                                     "sync.png",
                                     3,
                                     {"center_x": 0.5, "center_y": 0.965}

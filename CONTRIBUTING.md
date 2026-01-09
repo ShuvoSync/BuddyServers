@@ -7,10 +7,10 @@ We appreciate your interest in contributing to BuddyServers! To maintain quality
 ## 🚧 Contribution Guidelines
 
 ### 1. Check Existing Issues First  
-Before opening a new issue or feature request, please check the [issue tracker](https://github.com/macarooni-man/BuddyServers/issues) to see if one already exists. If you can contribute to solving an existing issue, that’s even better!
+Before opening a new issue or feature request, please check the [issue tracker](https://github.com/ShuvoSync/BuddyServers/issues) to see if one already exists. If you can contribute to solving an existing issue, that’s even better!
 
 ### 2. PRs Are Not for Feature Brainstorming  
-All pull requests must be based on an existing and discussed issue. If you have an idea for a new feature, open a [feature request issue](https://github.com/macarooni-man/BuddyServers/issues) first. Do not use pull requests as a substitute for conversation.
+All pull requests must be based on an existing and discussed issue. If you have an idea for a new feature, open a [feature request issue](https://github.com/ShuvoSync/BuddyServers/issues) first. Do not use pull requests as a substitute for conversation.
 
 ### 3. Target the Correct Branch  
 All pull requests must be made against the `dev` branch.  
@@ -57,8 +57,8 @@ Additionally, please include detailed information of the platforms tested of bot
 - Host: Ubuntu 22.04 Server (headless)
 - Client: Windows 10
 
-### amscript Testing
-If your contribution affects [amscript](https://www.BuddyServers.com/guides/amscript), please include example scripts in the description of your PR. Preferably a comparison with something that either doesn't work/doesn't exist in the current version, and an example that includes the changes in the PR.
+### BuddyScript Testing
+If your contribution affects [BuddyScript](https://www.buddyservers.com/guides/buddyscript), please include example scripts in the description of your PR. Preferably a comparison with something that either doesn't work/doesn't exist in the current version, and an example that includes the changes in the PR.
 
 
 ---

@@ -165,6 +165,11 @@ start_script_name = "Start"
 # Filename of the BuddyServers server config file
 server_ini        = 'buddyservers.ini'  if os_name == "windows" else '.buddyservers.ini'
 
+# Legacy configuration filenames for backward compatibility
+LEGACY_SERVER_INI = 'auto-mcs.ini'
+LEGACY_HIDDEN_SERVER_INI = '.auto-mcs.ini'
+
+
 # Filename of the temporary command list for automatic execution on server start
 command_tmp       = 'start-cmd.tmp' if os_name == "windows" else '.start-cmd.tmp'
 
@@ -1053,7 +1058,7 @@ fonts = {
 server_manager:  'core.server.manager.ServerManager' = None
 
 # Global script object for IDE suggestions
-script_obj:      'core.server.amscript.ScriptObject' = None
+script_obj:      'core.server.buddyscript.ScriptObject' = None
 
 # Global instance of the Discord presence manager from the desktop UI
 discord_presence: 'ui.desktop.utility.DiscordPresenceManager' = None
@@ -1118,10 +1123,10 @@ update_data: dict[str, Any] = {
 }
 
 
-# Grabs amscript files from the GitHub repo for downloading internally
+# Grabs buddyscript files from the GitHub repo for downloading internally
 def get_repo_scripts() -> list:
-    from source.core.server import amscript
-    global ams_web_list
+    from source.core.server import buddyscript
+    global buddyscript_web_list
 
     try:
         latest_commit = requests.get("https://api.github.com/repos/ShuvoSync/BuddyServers/commits").json()[0]['sha']
@@ -1129,12 +1134,12 @@ def get_repo_scripts() -> list:
             f"https://api.github.com/repos/ShuvoSync/BuddyServers/git/trees/{latest_commit}?recursive=1").json()
 
         script_dict = {}
-        ams_list = []
+        script_list = []
         root_url = "https://raw.githubusercontent.com/ShuvoSync/BuddyServers/main/"
 
         # Organize all script files
         for file in repo_data['tree']:
-            if file['path'].startswith('amscript-library'):
+            if file['path'].startswith('buddyscript-library'):
                 if "/" in file['path']:
                     root_name = file['path'].split("/")[1]
                     if root_name not in script_dict:
@@ -1143,24 +1148,24 @@ def get_repo_scripts() -> list:
                     if root_name + "/" in file['path']:
                         script_dict[root_name][os.path.basename(file['path'])] = f"{root_url}{quote(file['path'])}"
 
-        # Concurrently add scripts to ams_list
+        # Concurrently add scripts to script_list
         def add_to_list(script, *args):
-            ams_list.append(amscript.AmsWebObject(script))
+            script_list.append(buddyscript.WebScript(script))
 
         with ThreadPoolExecutor(max_workers=10) as pool:
             pool.map(add_to_list, script_dict.items())
 
         # Sort list by title
-        ams_list = sorted(ams_list, key=lambda x: x.title, reverse=True)
+        script_list = sorted(script_list, key=lambda x: x.title, reverse=True)
 
     except:
-        ams_list = []
+        script_list = []
 
-    ams_web_list = ams_list
-    return ams_list
-ams_web_list: list['core.server.amscript.AmsWebObject'] = []
+    buddyscript_web_list = script_list
+    return script_list
+buddyscript_web_list: list['core.server.buddyscript.WebScript'] = []
 
-# Clean-up amscript IDE cache
+# Clean-up BuddyScript IDE cache
 def clear_script_cache(script_path):
     json_path = None
 
@@ -2989,7 +2994,7 @@ class ConfigManager():
             'id_hash':      None
         }
         defaults.ide_settings = {
-            'fullscreen':   False,            # Stores if the desktop amscript IDE was maximized or not
+            'fullscreen':   False,            # Stores if the desktop BuddyScript IDE was maximized or not
             'font-size':    15,               # Stores the configured font size of the IDE
             'geometry':     {}                # Stores the last window position & size of the IDE
         }
@@ -3115,7 +3120,7 @@ class SearchManager():
                 ScreenObject('Back-up Manager', 'ServerBackupScreen', {'Save a back-up now': None, 'Restore from a back-up': 'ServerBackupRestoreScreen', 'Enable automatic back-ups': None, 'Specify maximum back-ups': None, 'Open back-up directory': None, 'Migrate back-up directory': None, 'Clone this server': 'ServerCloneScreen'}, ['backup', 'revert', 'snapshot', 'restore', 'save', 'clone']),
                 ScreenObject('Access Control', 'ServerAclScreen', {'Configure bans': None, 'Configure operators': None, 'Configure the whitelist': None}, ['player', 'user', 'ban', 'white', 'op', 'rule', 'ip', 'acl', 'access control']),
                 ScreenObject('Add-on Manager', 'ServerAddonScreen', {'Download add-ons': 'ServerAddonSearchScreen', 'Import add-ons': None, 'Toggle add-on state': None, 'Update add-ons': None}, ['mod', 'plugin', 'addon', 'extension']),
-                ScreenObject('Script Manager', 'ServerAmscriptScreen', {'Download scripts': 'ServerAmscriptSearchScreen', 'Import scripts': None, 'Create a new script': 'CreateAmscriptScreen', 'Edit a script': None, 'Open script directory': None}, ['amscript', 'script', 'ide', 'develop']),
+                ScreenObject('Script Manager', 'ServerBuddyScriptScreen', {'Download scripts': 'ServerBuddyScriptSearchScreen', 'Import scripts': None, 'Create a new script': 'CreateBuddyScriptScreen', 'Edit a script': None, 'Open script directory': None}, ['buddyscript', 'script', 'ide', 'develop']),
                 ScreenObject('Server Settings', 'ServerSettingsScreen', {"Edit configuration files": 'ServerConfigScreen', "Edit 'server.properties'": None, 'Open server directory': None, 'Specify memory usage': None, 'Change MOTD': None, 'Specify IP/port': None, 'Change launch flags': None, 'Enable proxy (playit)': None, 'Install proxy (playit)': None, 'Enable Bedrock support': None, 'Enable automatic updates': None, 'Update this server': None, "Change 'server.jar'": 'MigrateServerTypeScreen', 'Rename this server': None, 'Change world file': 'ServerWorldScreen', 'Delete this server': None}, ['ram', 'memory', 'server.properties', 'properties', 'rename', 'delete', 'bedrock', 'proxy', 'ngrok', 'playit', 'update', 'jvm', 'motd', 'yml', 'config'])
             ]
         }
@@ -3395,7 +3400,7 @@ class SearchManager():
                 return 'allocate memory'
 
             elif check_word('ide'):
-                return 'amscript ide'
+                return 'buddyscript ide'
 
             elif 'modding' in query.lower():
                 return 'installing addons'
@@ -3410,8 +3415,8 @@ class SearchManager():
             elif (check_word('make') or check_word('create')) and check_word('server'):
                 return 'create a server'
 
-            elif check_word('amscript') and 'what is' in query.lower():
-                return 'amscript'
+            elif check_word('buddyscript') and 'what is' in query.lower():
+                return 'buddyscript'
 
             elif 'port forward' in query.lower() or check_word(
                 'nat') or 'address translation' in query.lower() or check_word('tcp') or check_word(
@@ -3421,9 +3426,9 @@ class SearchManager():
             elif check_word('port') or check_word('ip'):
                 return 'lan config'
 
-            elif check_word('amscript') and (
+            elif check_word('buddyscript') and (
                 check_word('download') or check_word('use') or check_word('install') or check_word('get')):
-                return 'amscript getting started'
+                return 'buddyscript getting started'
 
             else: return s
 
@@ -3541,10 +3546,10 @@ class SearchManager():
                         else:
                             return w1 not in query and w2 in page_title
 
-                    if check_word_in_title('addon') or check_word_in_title('backup') or check_word_in_title('amscript'):
+                    if check_word_in_title('addon') or check_word_in_title('backup') or check_word_in_title('buddyscript'):
                         continue
 
-                    if check_word_in_title('addon', invert=True) or check_word_in_title('backup', invert=True) or check_word_in_title('amscript', invert=True):
+                    if check_word_in_title('addon', invert=True) or check_word_in_title('backup', invert=True) or check_word_in_title('buddyscript', invert=True):
                         continue
 
                     for title, paragraph in content.items():

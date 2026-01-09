@@ -875,7 +875,7 @@ class ConsolePanel(FloatLayout):
             elif current_filter == 'players':
                 event_whitelist.extend(['CHAT', 'PLAYER'])
 
-            elif current_filter == 'amscript':
+            elif current_filter == 'buddyscript':
                 event_whitelist.extend(['AMS', 'EXEC'])
 
             text = [l for l in text if l['text'][1] in event_whitelist]
@@ -2193,7 +2193,7 @@ class ConsolePanel(FloatLayout):
                     {'name': 'everything', 'icon': 'reader.png', 'action': lambda *_: self.change_filter('everything')},
                     {'name': 'only errors', 'icon': 'warning.png', 'action': lambda *_: self.change_filter('errors')},
                     {'name': 'only players', 'icon': 'person.png', 'action': lambda *_: self.change_filter('players')},
-                    {'name': 'amscript', 'icon': 'amscript.png', 'action': lambda *_: self.change_filter('amscript')}
+                    {'name': 'buddyscript', 'icon': 'buddyscript.png', 'action': lambda *_: self.change_filter('buddyscript')},
                 ]
                 super().show(widget=self.panel.controls.filter_button.button, options_list=filters)
 

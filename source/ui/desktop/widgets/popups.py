@@ -1188,7 +1188,7 @@ class PopupScript(BigPopupWindow):
 
         self.window_color = (0.42, 0.475, 1, 1)
         self.window_text_color = (0.1, 0.1, 0.2, 1)
-        self.window_icon_path = os.path.join(paths.ui_assets, 'icons', 'amscript.png')
+        self.window_icon_path = os.path.join(paths.ui_assets, 'icons', 'buddyscript.png')
         self.installed = False
 
         # Assign addon info to popup

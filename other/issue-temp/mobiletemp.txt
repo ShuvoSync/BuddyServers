@@ -1,4 +1,3 @@
-Verify functions that do x.replace('\n', '') also replace linux line breaks 
 
 If IP banned user is pardoned, unban IP if the rule is a single IP. If it's a subnet ban, whitelist the user's IP
 
@@ -79,7 +78,7 @@ Create scripting api for servers that allows for custom plugins:
     for command in server.aliases:
         server.execute(f'/say !{command}') 
 
-- allow ability to inherit events from other .ams files 
+- allow ability to inherit events from other .bs files 
 
 Remove tqdm from dependencies 
 

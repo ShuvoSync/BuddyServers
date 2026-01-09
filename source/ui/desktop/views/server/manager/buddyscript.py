@@ -2,10 +2,10 @@ from source.ui.desktop.views.server.manager.components import *
 
 
 
-# amscript Manager ------------------------------------------------------------------------------------------------
+# BuddyScript Manager ------------------------------------------------------------------------------------------------
 
 def edit_script(edit_button, server_obj, script_path, download=True):
-    "amscript-icon.png"
+    "buddyscript-icon.png"
 
     # Override to download locally
     telepath_data = None
@@ -15,10 +15,10 @@ def edit_script(edit_button, server_obj, script_path, download=True):
         telepath_data['headers'] = constants.api_manager._get_headers(telepath_data['host'], True)
         if download: script_path = constants.telepath_download(server_obj._telepath_data, script_path, os.path.join(paths.telepath_script_temp, server_obj._telepath_data['host']))
 
-    send_log('edit_script', f"opening in amscript IDE:\n'{script_path}'", 'info')
+    send_log('edit_script', f"opening in BuddyScript IDE:\n'{script_path}'", 'info')
 
     # Update Discord rich presence
-    constants.discord_presence.update_presence(f"amscript IDE > Editing '{os.path.basename(script_path)}'")
+    constants.discord_presence.update_presence(f"buddyscript IDE > Editing '{os.path.basename(script_path)}'")
 
     constants.app_config.load_config()
 
@@ -50,7 +50,7 @@ def edit_script(edit_button, server_obj, script_path, download=True):
         '_send_log': logger.send_log
     }
 
-    Clock.schedule_once(functools.partial(amseditor.edit_script, script_path, data_dict, ipc_functions), 0.1)
+    Clock.schedule_once(functools.partial(buddyscript_editor.edit_script, script_path, data_dict, ipc_functions), 0.1)
     if edit_button:
         edit_button.on_leave()
         edit_button.on_release()
@@ -369,7 +369,7 @@ class ScriptListButton(HoverButton):
                             functools.partial(
                                 utility.screen_manager.current_screen.show_banner,
                                 (0.937, 0.831, 0.62, 1),
-                                "An amscript reload is required to apply changes",
+                                "A BuddyScript reload is required to apply changes",
                                 "sync.png",
                                 3,
                                 {"center_x": 0.5, "center_y": 0.965}
@@ -427,7 +427,7 @@ class ScriptListButton(HoverButton):
                             functools.partial(
                                 utility.screen_manager.current_screen.show_banner,
                                 (0.937, 0.831, 0.62, 1),
-                                "An amscript reload is required to apply changes",
+                                "A BuddyScript reload is required to apply changes",
                                 "sync.png",
                                 3,
                                 {"center_x": 0.5, "center_y": 0.965}
@@ -553,7 +553,7 @@ class ScriptListButton(HoverButton):
             Animation(opacity=0.56, duration=fade_in).start(self.subtitle)
 
 
-class CreateAmscriptScreen(MenuBackground):
+class CreateBuddyScriptScreen(MenuBackground):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -586,8 +586,8 @@ class CreateAmscriptScreen(MenuBackground):
 
 
 
-# {translate('Welcome to the amscript IDE!')}
-# {translate('Right-click > Help to learn more about the capabilities of amscript')}
+# {translate('Welcome to the BuddyScript IDE!')}
+# {translate('Right-click > Help to learn more about the capabilities of buddyscript')}
 
 @player.on_join(player, message):
     if player not in server.usercache:
@@ -617,7 +617,7 @@ class CreateAmscriptScreen(MenuBackground):
                     functools.partial(
                         self.show_banner,
                         (0.937, 0.831, 0.62, 1),
-                        "An amscript reload is required to apply changes",
+                        "A BuddyScript reload is required to apply changes",
                         "sync.png",
                         3,
                         {"center_x": 0.5, "center_y": 0.965}
@@ -644,13 +644,13 @@ class CreateAmscriptScreen(MenuBackground):
         self.name_input = ScriptNameInput(pos_hint={"center_x": 0.5, "center_y": 0.5})
         float_layout.add_widget(self.name_input)
         self.name_input.update_script_list(server_obj.script_manager.return_single_list())
-        self.create_button = WaitButton('Create in IDE', (0.5, 0.24), 'amscript.png', width=370, icon_offset=-150, disabled=True, click_func=on_click)
+        self.create_button = WaitButton('Create in IDE', (0.5, 0.24), 'buddyscript.png', width=370, icon_offset=-150, disabled=True, click_func=on_click)
         buttons.append(self.create_button)
         buttons.append(ExitButton('Back', (0.5, 0.14), cycle=True))
 
         for button in buttons: float_layout.add_widget(button)
 
-        menu_name = f"{server_obj.name}, amscript, Create script"
+        menu_name = f"{server_obj.name}, buddyscript, Create script"
         float_layout.add_widget(generate_title(f"Script Manager: '{server_obj.name}'"))
         float_layout.add_widget(generate_footer(menu_name))
 
@@ -658,7 +658,7 @@ class CreateAmscriptScreen(MenuBackground):
         self.name_input.grab_focus()
 
 
-class ServerAmscriptScreen(MenuBackground):
+class ServerBuddyScriptScreen(MenuBackground):
 
     def switch_page(self, direction):
 
@@ -776,7 +776,7 @@ class ServerAmscriptScreen(MenuBackground):
                             functools.partial(
                                 self.show_banner,
                                 (0.937, 0.831, 0.62, 1),
-                                "An amscript reload is required to apply changes",
+                                "A BuddyScript reload is required to apply changes",
                                 "sync.png",
                                 3,
                                 {"center_x": 0.5, "center_y": 0.965}
@@ -924,14 +924,14 @@ class ServerAmscriptScreen(MenuBackground):
         for button in buttons: float_layout.add_widget(button)
         float_layout.add_widget(bottom_buttons)
 
-        menu_name = f"{self.server.name}, amscript"
+        menu_name = f"{self.server.name}, BuddyScript"
         float_layout.add_widget(generate_title(f"Script Manager: '{self.server.name}'"))
         float_layout.add_widget(generate_footer(menu_name))
 
         self.add_widget(float_layout)
 
         # Add ManuTaskbar
-        self.menu_taskbar = MenuTaskbar(selected_item='amscript')
+        self.menu_taskbar = MenuTaskbar(selected_item='buddyscript')
         self.add_widget(self.menu_taskbar)
 
         # Buttons in the top right corner
@@ -950,7 +950,7 @@ class ServerAmscriptScreen(MenuBackground):
                         functools.partial(
                             self.show_banner,
                             (0.553, 0.902, 0.675, 1),
-                            f"amscript engine was restarted successfully",
+                            f"BuddyScript engine was restarted successfully",
                             "checkmark-circle-sharp.png",
                             2.5,
                             {"center_x": 0.5, "center_y": 0.965}
@@ -972,7 +972,7 @@ class ServerAmscriptScreen(MenuBackground):
                 functools.partial(
                     self.show_banner,
                     (0.937, 0.831, 0.62, 1),
-                    "An amscript reload is required to apply changes",
+                    "A BuddyScript reload is required to apply changes",
                     "sync.png",
                     3,
                     {"center_x": 0.5, "center_y": 0.965}
@@ -980,7 +980,7 @@ class ServerAmscriptScreen(MenuBackground):
             )
 
 
-class ServerAmscriptSearchScreen(MenuBackground):
+class ServerBuddyScriptSearchScreen(MenuBackground):
 
     def switch_page(self, direction):
 
@@ -1078,7 +1078,7 @@ class ServerAmscriptSearchScreen(MenuBackground):
                                     functools.partial(
                                         self.show_banner,
                                         (0.937, 0.831, 0.62, 1),
-                                        "An amscript reload is required to apply changes",
+                                        "A BuddyScript reload is required to apply changes",
                                         "sync.png",
                                         3,
                                         {"center_x": 0.5, "center_y": 0.965}
@@ -1110,7 +1110,7 @@ class ServerAmscriptSearchScreen(MenuBackground):
                                             functools.partial(
                                                 self.show_banner,
                                                 (0.937, 0.831, 0.62, 1),
-                                                "An amscript reload is required to apply changes",
+                                                "A BuddyScript reload is required to apply changes",
                                                 "sync.png",
                                                 3,
                                                 {"center_x": 0.5, "center_y": 0.965}
@@ -1269,7 +1269,7 @@ class ServerAmscriptSearchScreen(MenuBackground):
         for button in buttons: float_layout.add_widget(button)
 
         server_name = constants.server_manager.current_server.name
-        menu_name = f"{server_name}, amscript, Download"
+        menu_name = f"{server_name}, BuddyScript, Download"
         float_layout.add_widget(generate_title(f"Script Manager: '{server_name}'"))
         float_layout.add_widget(generate_footer(menu_name))
 

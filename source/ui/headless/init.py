@@ -456,7 +456,7 @@ def init_import_server(path):
                 'path': selected_server
             }
 
-    # If the path is a BuddyServers or legacy Auto-MCS back-up
+    # If the path is a BuddyServers or legacy back-up
     elif os.path.isfile(path) and (path.endswith('.amb') or path.endswith('.bsb') or path.endswith(".tgz")) and os.path.isfile(path):
         selected_server = os.path.abspath(path)
 
@@ -471,11 +471,11 @@ def init_import_server(path):
         os.chdir(test_path)
         constants.run_proc(f'tar -xf "{selected_server}" buddyservers.ini')
         constants.run_proc(f'tar -xf "{selected_server}" .buddyservers.ini')
-        constants.run_proc(f'tar -xf "{selected_server}" auto-mcs.ini')
-        constants.run_proc(f'tar -xf "{selected_server}" .auto-mcs.ini')
+        constants.run_proc(f'tar -xf "{selected_server}" {constants.LEGACY_SERVER_INI}')
+        constants.run_proc(f'tar -xf "{selected_server}" {constants.LEGACY_HIDDEN_SERVER_INI}')
         constants.run_proc(f'tar -xf "{selected_server}" server.properties')
         
-        valid_configs = ["buddyservers.ini", ".buddyservers.ini", "auto-mcs.ini", ".auto-mcs.ini"]
+        valid_configs = ["buddyservers.ini", ".buddyservers.ini", constants.LEGACY_SERVER_INI, constants.LEGACY_HIDDEN_SERVER_INI]
         new_path = next((os.path.join(test_path, cfg) for cfg in valid_configs if os.path.exists(os.path.join(test_path, cfg))), None)
 
         if new_path and os.path.exists(os.path.join(test_path, "server.properties")):

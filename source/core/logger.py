@@ -819,7 +819,7 @@ class AuditLogger():
 
 # Global logger wrapper
 # Levels: 'debug', 'info', 'warning', 'error', 'fatal'
-# Stacks: 'core', 'ui', 'api', 'amscript'
+# Stacks: 'core', 'ui', 'api', 'buddyscript'
 if not constants.is_child_process:
     log_manager: AppLogger = AppLogger()
     send_log = log_manager._dispatch

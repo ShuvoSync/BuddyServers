@@ -1,10 +1,10 @@
 # Overview
 
-The BuddyServers scripting API (*amscript*) is available to quickly create universal plugins for your BuddyServers servers. It functions primarily as an asynchronous wrapper which fires events from what happens in-game and uses standard Python 3.12 syntax. Because of this mechanic, a single script will work with every Vanilla, CraftBukkit (and derivatives), Forge, and Fabric server regardless of the game version. This functionality can be accessed via the amscript button in the Server Manager. Create a new script to open the built-in IDE and get started!
+The BuddyServers scripting API (*buddyscript*) is available to quickly create universal plugins for your BuddyServers servers. It functions primarily as an asynchronous wrapper which fires events from what happens in-game and uses standard Python 3.12 syntax. Because of this mechanic, a single script will work with every Vanilla, CraftBukkit (and derivatives), Forge, and Fabric server regardless of the game version. This functionality can be accessed via the buddyscript button in the Server Manager. Create a new script to open the built-in IDE and get started!
 
-To see more examples of the library in action, [visit our repository of amscripts](https://github.com/macarooni-man/BuddyServers/tree/main/amscript-library) to see how the objects and events work together!
+To see more examples of the library in action, [visit our repository of buddyscripts](https://github.com/ShuvoSync/BuddyServers/tree/main/buddyscript-library) to see how the objects and events work together!
 
-> Note: All of these scripts are available to download and edit directly inside the amscript manager
+> Note: All of these scripts are available to download and edit directly inside the buddyscript manager
 
 <br><br><br>
 
@@ -115,7 +115,7 @@ Executes any Minecraft command in the server console.
 
 ### server.after(*delay, function, params*)
 
-Runs a delayed background (non-blocking) task. Exits before execution if the server stops, or if scripts are reloaded. Returns `ServerScriptObject.AmsTimer()` of the background task, which has a method `AmsTimer.cancel()` to end prematurely.
+Runs a delayed background (non-blocking) task. Exits before execution if the server stops, or if scripts are reloaded. Returns `ServerScriptObject.BuddyScriptTimer()` of the background task, which has a method `BuddyScriptTimer.cancel()` to end prematurely.
 
 **Accepted parameters**:
 | Parameter | Description | 
@@ -160,7 +160,7 @@ Returns a generator of [**PlayerScriptObject**](#PlayerScriptObject) for each on
  - `str`, server's current filename
 
 #### server.version
- - `AmsVersion`, Minecraft version of the server, i.e. `'1.16.3'`
+ - `BuddyScriptVersion`, Minecraft version of the server, i.e. `'1.16.3'`
  - When used in a string, it will be formatted as `'1.16.3'`
  - Can be used in mathematical comparisons with another version string, returns `bool`.
 ```python
@@ -207,8 +207,8 @@ if server.version >= '1.8':
 
 > Warning: persistent data is only saved properly when the server shuts down gracefully, if the computer crashes or the server process is terminated forcefully, the persistent data will likely revert to previous values
 
-#### server.ams_version
-- `str`, contains the current amscript version to account for API changes
+#### server.buddyscript_version
+- `str`, contains the current buddyscript version to account for API changes
 
 #### server.output
 - `list`, contains a formatted list of dictionaries organizing the items visible in the BuddyServers console from oldest to newest (limit of 850)
@@ -360,7 +360,7 @@ Useful for command feedback with a [**@player.on_alias**](#playeron_alias) event
  - An `InventoryObject` is structured in the following format:
 ```python
 class InventoryObject():
-    # The attributes below are supported and abracted in a consistent way via amscript, regardless of the game version
+    # The attributes below are supported and abracted in a consistent way via buddyscript, regardless of the game version
 
     # The selected item in the inventory
     self.selected_item <ItemObject>
@@ -405,7 +405,7 @@ class InventoryObject():
  - An `ItemObject` is structured in the following format:
 ```python
 class ItemObject():
-    # The attributes below (except for self.nbt) are supported and abstracted in a consistent way via amscript, regardless of the game version
+    # The attributes below (except for self.nbt) are supported and abstracted in a consistent way via buddyscript, regardless of the game version
 
     # The slot in the inventory that contains the item
     # Follows the standard Minecraft slot format, e.g. "slot.hotbar.0", "slot.armor.head", "slot.inventory.0", etc.
@@ -1038,15 +1038,15 @@ addon.installed_addons = {
 
 
 ## ScriptManager
-Contains the server's amscript configuration.
+Contains the server's BuddyScript configuration.
 
-Accessed via the global variable `amscript`
+Accessed via the global variable `buddyscript`
 
 The `ScriptManager` conceptualizes scripts in a few different formats:
 
-- For all functionality relating to data stored locally, scripts are abstracted as an `AmsFileObject`. The attributes are as follows:
+- For all functionality relating to data stored locally, scripts are abstracted as an `ScriptFileObject`. The attributes are as follows:
 ```python
-class AmsFileObject():
+class ScriptFileObject():
     self.addon_object_type = "file"
 
     # The title defined in the script
@@ -1073,9 +1073,9 @@ class AmsFileObject():
 
 <br>
 
-- For all functionality relating to data stored on the internet, scripts are abstracted as an `AmsWebObject`. The attributes are as follows:
+- For all functionality relating to data stored on the internet, scripts are abstracted as an `ScriptWebObject`. The attributes are as follows:
 ```python
-class AmsWebObject():
+class ScriptWebObject():
     self.addon_object_type = "web"
 
     # The title defined on the internet
@@ -1114,9 +1114,9 @@ class AmsWebObject():
 
 
 
-### amscript.search_scripts(*query*)
+### buddyscript.search_scripts(*query*)
 
-Returns a `list` of `AmsWebObject` that match your query, sorted in descending order from `index[0]`.
+Returns a `list` of `ScriptWebObject` that match your query, sorted in descending order from `index[0]`.
 
 **Accepted parameters**:
 | Parameter | Description |
@@ -1127,66 +1127,66 @@ Returns a `list` of `AmsWebObject` that match your query, sorted in descending o
 
 
 
-### amscript.download_script(*script*)
+### buddyscript.download_script(*script*)
 
-Downloads a script from a string of the script name, or an `AddonWebObject` provided by `addon.search_addons()`. The file is saved in `amscript.script_path`.
+Downloads a script from a string of the script name, or an `AddonWebObject` provided by `addon.search_addons()`. The file is saved in `buddyscript.script_path`.
 
 **Accepted parameters**:
 | Parameter | Description |
 | --- | --- |
-| `script*` | `str` or `AmsWebObject` to download |
+| `script*` | `str` or `ScriptWebObject` to download |
 
 <br>
 
 
 
-### amscript.import_script(*script_path*)
+### buddyscript.import_script(*script_path*)
 
-Imports an `.ams` file to `amscript.script_path`.
+Imports an `.bs` file to `buddyscript.script_path`.
 
 **Accepted parameters**:
 | Parameter | Description |
 | --- | --- |
-| `script_path*` | `str`, full system path to the `.ams` file |
+| `script_path*` | `str`, full system path to the `.bs` file |
 
 <br>
 
 
 
-### amscript.script_state(*script, enabled*)
+### buddyscript.script_state(*script, enabled*)
 
-Enables/disables an installed script. Retrieve an `AmsFileObject` with `amscript.get_script()` or from `amscript.installed_scripts`.
+Enables/disables an installed script. Retrieve an `ScriptFileObject` with `buddyscript.get_script()` or from `buddyscript.installed_scripts`.
 
-> Note: The amscript engine requires a restart for changes to take effect
+> Note: The BuddyScript engine requires a restart for changes to take effect
 
 **Accepted parameters**:
 | Parameter | Description |
 | --- | --- |
-| `script*` | `AmsFileObject`, from `amscript.get_script()` or `amscript.installed_scripts` |  
+| `script*` | `ScriptFileObject`, from `buddyscript.get_script()` or `buddyscript.installed_scripts` |  
 | `enabled*` | `bool`, to enable or disable the script. Defaults to `True` |
 
 <br>
 
 
 
-### amscript.delete_script(*script*)
+### buddyscript.delete_script(*script*)
 
-Permanently deletes an installed script. Retrieve an `AmsFileObject` with `amscript.get_script()` or from `amscript.installed_scripts`.
+Permanently deletes an installed script. Retrieve an `ScriptFileObject` with `buddyscript.get_script()` or from `buddyscript.installed_scripts`.
 
-> Note: The amscript engine requires a restart for changes to take effect
+> Note: The BuddyScript engine requires a restart for changes to take effect
 
 **Accepted parameters**:
 | Parameter | Description |
 | --- | --- |
-| `script*` | `AmsFileObject`, from `amscript.get_script()` or `amscript.installed_scripts` |
+| `script*` | `ScriptFileObject`, from `buddyscript.get_script()` or `buddyscript.installed_scripts` |
 
 <br>
 
 
 
-### amscript.get_script(*script_name, online*)
+### buddyscript.get_script(*script_name, online*)
 
-Retrieves an `AmsFileObject` from the installed server scripts, or `AmsWebObject` from the online repository if `online` is `True`.
+Retrieves an `ScriptFileObject` from the installed server scripts, or `ScriptWebObject` from the online repository if `online` is `True`.
 
 **Accepted parameters**:
 | Parameter | Description |
@@ -1198,9 +1198,9 @@ Retrieves an `AmsFileObject` from the installed server scripts, or `AmsWebObject
 
 
 
-### amscript.return_single_list()
+### buddyscript.return_single_list()
 
-Returns a single `list` of both enabled and disabled `AmsFileObject` from `amscript.installed_scripts`.
+Returns a single `list` of both enabled and disabled `ScriptFileObject` from `buddyscript.installed_scripts`.
 
 <br>
 
@@ -1210,20 +1210,20 @@ Returns a single `list` of both enabled and disabled `AmsFileObject` from `amscr
 > Note: All attributes are read-only, and thus will not change the server data when modified
 
 
-#### amscript.installed_scripts
- - `dict`, contains lists of `AmsFileObject` with the following structure:
+#### buddyscript.installed_scripts
+ - `dict`, contains lists of `ScriptFileObject` with the following structure:
  ```python
-amscript.installed_scripts = {
-    'enabled': [AmsFileObject, AmsFileObject, ...],
-    'disabled': [AmsFileObject, AmsFileObject, ...]
+buddyscript.installed_scripts = {
+    'enabled': [ScriptFileObject, ScriptFileObject, ...],
+    'disabled': [ScriptFileObject, ScriptFileObject, ...]
 }
 ```
 
-#### amscript.script_path
+#### buddyscript.script_path
 - `str`, full filesystem path to the global BuddyServers script folder
 
-#### amscript.json_path
-- `str`, full filesystem path to the server's amscript `.json` configuration file
+#### buddyscript.json_path
+- `str`, full filesystem path to the server's BuddyScript `.json` configuration file
 
 <br><br>
 
@@ -1274,7 +1274,7 @@ Fired upon process termination by BuddyServers, not when `/stop` or a crash is l
     server.log("Server has stopped!")
 ```
 
-This event is also fired when the amscript engine is restarted, either through the UI or `!ams reload`.
+This event is also fired when the BuddyScript engine is restarted, either through the UI or `!bs reload`.
 
 Since engine restarts create a new memory space, this is useful when an asyncronous task such as a GUI window or another server is running in the background and that process needs to be closed when scripts are reloaded or the server is stopped.
 
@@ -1452,7 +1452,7 @@ Used for registering custom commands and augmenting existing ones.
 > Note: Every alias automatically validates syntax and checks the player's permission level before execution
 
 Following the above example when a player with the `anyone` privilege executes `!test foo bar`:
-- amscript will determine that the player doesn't meet the minimum permission and will fail
+- BuddyScript will determine that the player doesn't meet the minimum permission and will fail
 - Permission tree is `server` > `op` > `anyone`
 
 Following the above example when a player with the `op` or `server` privilege executes `!test foo bar`:

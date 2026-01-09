@@ -122,7 +122,7 @@ class MainApp(App):
 
         if force_close:
             Window.close()
-            amseditor.quit_ipc = True
+            buddyscript_editor.quit_ipc = True
             return False
 
         if constants.ignore_close:
@@ -134,7 +134,7 @@ class MainApp(App):
 
         else:
             Window.close()
-            amseditor.quit_ipc = True
+            buddyscript_editor.quit_ipc = True
             return False
 
     def _close_window_wrapper(self):
@@ -284,12 +284,12 @@ class MainApp(App):
                                 ), 0
                             )
 
-                if utility.screen_manager.current == 'ServerAmscriptScreen':
+                if utility.screen_manager.current == 'ServerBuddyScriptScreen':
                     script_manager = constants.server_manager.current_server.script_manager
                     if self.dropped_files:
                         banner_text = ''
                         for script in self.dropped_files:
-                            if script.endswith(".ams") and os.path.isfile(script):
+                            if (script.endswith(".ams") or script.endswith(".bs")) and os.path.isfile(script):
                                 script = script_manager.import_script(script)
                                 if not script:
                                     continue
@@ -316,7 +316,7 @@ class MainApp(App):
                                     functools.partial(
                                         utility.screen_manager.current_screen.show_banner,
                                         (0.937, 0.831, 0.62, 1),
-                                        "An amscript reload is required to apply changes",
+                                        "A BuddyScript reload is required to apply changes",
                                         "sync.png",
                                         3,
                                         {"center_x": 0.5, "center_y": 0.965}

@@ -37,15 +37,15 @@ class BackupObject():
         os.chdir(extract_folder)
 
         # Extract config from back-up file to grab version information
-        constants.run_proc(f'tar -xvf "{self.path}" auto-mcs.ini')
-        constants.run_proc(f'tar -xvf "{self.path}" .auto-mcs.ini')
+        constants.run_proc(f'tar -xvf "{self.path}" {constants.LEGACY_SERVER_INI}')
+        constants.run_proc(f'tar -xvf "{self.path}" {constants.LEGACY_HIDDEN_SERVER_INI}')
         constants.run_proc(f'tar -xvf "{self.path}" buddyservers.ini')
         constants.run_proc(f'tar -xvf "{self.path}" .buddyservers.ini')
 
         cfg_list = glob(os.path.join(extract_folder, 'buddyservers.ini'))
         cfg_list.extend(glob(os.path.join(extract_folder, '.buddyservers.ini')))
-        cfg_list.extend(glob(os.path.join(extract_folder, 'auto-mcs.ini')))
-        cfg_list.extend(glob(os.path.join(extract_folder, '.auto-mcs.ini')))
+        cfg_list.extend(glob(os.path.join(extract_folder, constants.LEGACY_SERVER_INI)))
+        cfg_list.extend(glob(os.path.join(extract_folder, constants.LEGACY_HIDDEN_SERVER_INI)))
 
         for cfg in cfg_list:
             config = ConfigParser(allow_no_value=True, comment_prefixes=';', interpolation=None)
@@ -455,20 +455,20 @@ def restore_server(name: str, backup_name: str, backup_stats=None):
                     if os.path.exists('.buddyservers.ini'):
                         os.rename('.buddyservers.ini', 'buddyservers.ini')
                     
-                    if os.path.exists('.auto-mcs.ini'):
-                        os.rename('.auto-mcs.ini', 'buddyservers.ini')
-                    elif os.path.exists('auto-mcs.ini'):
-                        os.rename('auto-mcs.ini', 'buddyservers.ini')
+                    if os.path.exists(constants.LEGACY_HIDDEN_SERVER_INI):
+                        os.rename(constants.LEGACY_HIDDEN_SERVER_INI, 'buddyservers.ini')
+                    elif os.path.exists(constants.LEGACY_SERVER_INI):
+                        os.rename(constants.LEGACY_SERVER_INI, 'buddyservers.ini')
                         
                     constants.run_proc(f"attrib +H \"{constants.server_ini}\"")
                 else:
                     if os.path.exists('buddyservers.ini'):
                         os.rename('buddyservers.ini', '.buddyservers.ini')
 
-                    if os.path.exists('auto-mcs.ini'):
-                        os.rename('auto-mcs.ini', '.buddyservers.ini')
-                    elif os.path.exists('.auto-mcs.ini'):
-                        os.rename('.auto-mcs.ini', '.buddyservers.ini')
+                    if os.path.exists(constants.LEGACY_SERVER_INI):
+                        os.rename(constants.LEGACY_SERVER_INI, '.buddyservers.ini')
+                    elif os.path.exists(constants.LEGACY_HIDDEN_SERVER_INI):
+                        os.rename(constants.LEGACY_HIDDEN_SERVER_INI, '.buddyservers.ini')
 
 
                 # Disable auto-updates to prevent the backup from getting overwritten immediately, also keep backup path
@@ -533,8 +533,8 @@ def set_backup_directory(name: str, new_dir: str, new_amount: str):
 
                         configs = glob(os.path.join(extract_folder, 'buddyservers.ini'))
                         configs.extend(glob(os.path.join(extract_folder, '.buddyservers.ini')))
-                        configs.extend(glob(os.path.join(extract_folder, 'auto-mcs.ini')))
-                        configs.extend(glob(os.path.join(extract_folder, '.auto-mcs.ini')))
+                        configs.extend(glob(os.path.join(extract_folder, constants.LEGACY_SERVER_INI)))
+                        configs.extend(glob(os.path.join(extract_folder, constants.LEGACY_HIDDEN_SERVER_INI)))
                         for cfg in configs:
                             config = ConfigParser(allow_no_value=True, comment_prefixes=';', interpolation=None)
                             config.optionxform = str
@@ -622,8 +622,8 @@ def rename_backup(file: str, new_name: str):
         config_files = []
         config_files.extend(glob(os.path.join(extract_folder, 'buddyservers.ini')))
         config_files.extend(glob(os.path.join(extract_folder, '.buddyservers.ini')))
-        config_files.extend(glob(os.path.join(extract_folder, 'auto-mcs.ini')))
-        config_files.extend(glob(os.path.join(extract_folder, '.auto-mcs.ini')))
+        config_files.extend(glob(os.path.join(extract_folder, constants.LEGACY_SERVER_INI)))
+        config_files.extend(glob(os.path.join(extract_folder, constants.LEGACY_HIDDEN_SERVER_INI)))
 
         for cfg in config_files:
             config = ConfigParser(allow_no_value=True, comment_prefixes=';', interpolation=None)

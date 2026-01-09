@@ -109,13 +109,13 @@ app = BUNDLE(coll,
         'CFBundleShortVersionString': app_version,
         'CFBundleDocumentTypes': [
             {
-                "CFBundleTypeExtensions": ["ams"],
+                "CFBundleTypeExtensions": ["bs"],
                 "CFBundleTypeName": f"{app_title} script",
                 "CFBundleTypeRole": "Editor",
                 "CFBundleTypeOSTypes": ["TEXT"],
             },
             {
-                "CFBundleTypeExtensions": ["amb"],
+                "CFBundleTypeExtensions": ["bsb"],
                 "CFBundleTypeName": f"{app_title} back-up file",
                 "CFBundleTypeRole": "Editor",
                 "CFBundleTypeOSTypes": ["TEXT"],

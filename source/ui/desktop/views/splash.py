@@ -665,10 +665,10 @@ class AppSettingsScreen(MenuBackground):
         management_layout.add_widget(sub_layout)
 
 
-        # Open Global amscript manager button
+        # Open Global BuddyScript manager button
         sub_layout = ScrollItem()
-        def amscript_screen(*a): utility.screen_manager.current = 'AmscriptManagerScreen'
-        open_telepath_button = WaitButton("Manage $amscript$", (0.5, 0.5), 'amscript.png', click_func=amscript_screen, disabled=True)
+        def buddyscript_screen(*a): utility.screen_manager.current = 'BuddyScriptManagerScreen'
+        open_telepath_button = WaitButton("Manage $BuddyScript$", (0.5, 0.5), 'buddyscript.png', click_func=buddyscript_screen, disabled=True)
         sub_layout.add_widget(open_telepath_button)
         management_layout.add_widget(sub_layout)
 

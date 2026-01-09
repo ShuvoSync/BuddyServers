@@ -14,7 +14,7 @@ $a = ".\BuddyServers.zip";Invoke-WebRequest https://BuddyServers.com/src -OutFil
 ## macOS
 On macOS, open a Terminal instance as a standard user and run the following one-liner to build BuddyServers from source:
 ```sh
-git clone https://github.com/macarooni-man/BuddyServers && cd BuddyServers/build-tools && chmod +x build-macos.sh && ./build-macos.sh
+git clone https://github.com/ShuvoSync/BuddyServers && cd BuddyServers/build-tools && chmod +x build-macos.sh && ./build-macos.sh
 ```
 > _Note:_   When running this command, you'll be prompted to install the command line developer tools if `git` is not installed. Additionally, you'll be prompted to install the homebrew package manager if it's not installed.
 
@@ -41,7 +41,7 @@ Additionally, to compile on Alpine Linux, install the `sudo` and `bash` packages
 
 Finally, in a terminal run the following one-liner to build BuddyServers from source:
 ```sh
-git clone https://github.com/macarooni-man/BuddyServers && cd BuddyServers/build-tools && chmod +x build-linux.sh && sudo ./build-linux.sh
+git clone https://github.com/ShuvoSync/BuddyServers && cd BuddyServers/build-tools && chmod +x build-linux.sh && sudo ./build-linux.sh
 ```
 <br><br>
 

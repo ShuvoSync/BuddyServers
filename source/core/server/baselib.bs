@@ -335,12 +335,12 @@ def sleep_timer(delay, sleep_type):
                         buddyscript.script_state(script, enabled=True)
                         if not player.is_server:
                             player.log_success(f"[BuddyScript] '{script.file_name}' is now enabled. Type '!bs reload' for changes to take effect")
-                        server._ams_log(f"'{script.file_name}' is now enabled. Type '!bs reload' for changes to take effect", 'success')
+                        server._buddyscript_log(f"'{script.file_name}' is now enabled. Type '!bs reload' for changes to take effect", 'success')
                     else:
                         buddyscript.script_state(script, enabled=False)
                         if not player.is_server:
                             player.log_error(f"[BuddyScript] '{script.file_name}' is now disabled. Type '!bs reload' for changes to take effect")
-                        server._ams_log(f"'{script.file_name}' is now disabled. Type '!bs reload' for changes to take effect", 'error')
+                        server._buddyscript_log(f"'{script.file_name}' is now disabled. Type '!bs reload' for changes to take effect", 'error')
                     if not all:
                         break
             else:
@@ -355,7 +355,7 @@ def sleep_timer(delay, sleep_type):
         server._persistent_config.purge_config()
         if not player.is_server:
             player.log_error(f"[BuddyScript] Successfully cleared all persistent data!")
-        server._ams_log(f"Successfully cleared all persistent data!", 'success')
+        server._buddyscript_log(f"Successfully cleared all persistent data!", 'success')
 
 
     # Reloads BuddyScript engine

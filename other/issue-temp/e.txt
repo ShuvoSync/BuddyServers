@@ -29,11 +29,11 @@ Server Manager Stuff:
 
 
 - Create persistent storage for PlayerScriptObjects, and ServerScriptObjects
-	- Storage should be in the "./Config/amscript/persistent" directory 
+	- Storage should be in the "./Config/buddyscript/persistent" directory 
 	- Player in "./persistent/player", server in "./persistent/server"
 	- Store files as "username.json", and "servername.json"
 	- Load player storage in PlayerScriptObject, and load server storage in ServerScriptObject
-	- Make command in baselib.ams !resetstorage (all, server, player) (None, server_name:(defaults to current server), player_name:(defaults to player running command)):optional
+	- Make command in baselib.bs !resetstorage (all, server, player) (None, server_name:(defaults to current server), player_name:(defaults to player running command)):optional
 
 
 
@@ -129,7 +129,7 @@ green = (0.3, 1, 0.6, 1)
 
 - Applying server configuration
 (Side note, create argument in acl.write_rules() to generate files in temp server)
-	# 1. If Forge, refer to installServer() function in main.py (L-3782) of AMCS 1.65 to install it
+	# 1. If Forge, refer to installServer() function in main.py (L-3782) of BuddyServers 1.65 to install it
 	# 	- Figure something out for fabric retard	
 	# 2. If custom world is selected, copy that to temp folder
 	3. Change custom world gamerules based on new_server_info, figure out how to do it with NBT for new worlds (chicken and the egg issue)

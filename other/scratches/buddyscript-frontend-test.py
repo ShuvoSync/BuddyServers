@@ -1,9 +1,9 @@
-# Initialize amscript engine for static testing
-def init_ams_engine():
-    import amscript
-    import telepath
-    import constants
-    import svrmgr
+# Initialize buddyscript engine for static testing
+def init_bs_engine():
+    import source.core.server.buddyscript as buddyscript
+    import source.core.telepath as telepath
+    import source.core.constants as constants
+    import source.core.server.manager as svrmgr
     import time
 
     constants.server_manager = svrmgr.ServerManager()
@@ -17,15 +17,15 @@ def init_ams_engine():
         'performance': {'ram': 0, 'cpu': 0, 'uptime': '00:00:00:00',
         'current-players': []}
     }
-    so = amscript.ScriptObject(constants.server_manager.current_server)
+    so = buddyscript.ScriptObject(constants.server_manager.current_server)
     so.construct()
     return so.server_script_obj
 
 
 # Server to test
 server_name = 'Shop Test'
-server = init_ams_engine()
+server = init_bs_engine()
 
 
-# Test amscript code below
+# Test buddyscript code below
 print(server.get_player('KChicken', offline=True).position)

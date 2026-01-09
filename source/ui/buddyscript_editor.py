@@ -529,7 +529,7 @@ proc ::tabdrag::move {win x y} {
         font_size = data['app_config'].ide_settings['font-size']
         geometry = data['app_config'].ide_settings['geometry']
 
-        file_icon = os.path.join(data['gui_assets'], "amscript-icon.png")
+        file_icon = os.path.join(data['gui_assets'], "buddyscript-icon.png")
 
         window = Tk()
         window.tk.eval(drag_code)
@@ -739,7 +739,7 @@ proc ::tabdrag::move {win x y} {
         window.root.pack(expand=1, fill='both')
 
         # Add logo
-        logo = ImageTk.PhotoImage(Image.open(os.path.join(data['gui_assets'], 'amscript-banner.png')))
+        logo = ImageTk.PhotoImage(Image.open(os.path.join(data['gui_assets'], 'buddyscript-banner.png')))
         logo_frame = Label(window, image=logo, bg=frame_background)
         logo_frame.place(anchor='nw', in_=window, x=-100, rely=0, relx=1, y=6.5)
 
@@ -780,7 +780,7 @@ proc ::tabdrag::move {win x y} {
         window.mainloop()
 
 
-# Opens the amscript editor with the specified path in a new tab
+# Opens the buddyscript editor with the specified path in a new tab
 def launch_window(path: str, data: dict, *a):
     global window, color_search, open_frames, replace_shown, control, font_name
 
@@ -4727,7 +4727,7 @@ def launch_window(path: str, data: dict, *a):
                 elif val == 'Redo':
                     code_editor.event_generate(f"<{control}-r>")
                 elif val == 'Help':
-                    webbrowser.open('https://www.buddyservers.com/guides/amscript')
+                    webbrowser.open('https://www.buddyservers.com/guides/buddyscript')
 
                 # Graphically deselect button on macOS
                 if data['os_name'] == 'macos':
@@ -4904,7 +4904,7 @@ if os.name == 'nt':
 
 
 # if __name__ == '__main__':
-#     from source.core.server import amscript
+#     from source.core.server import buddyscript
 #     from source.core.constants import paths
 #     from source.core import constants, telepath, logger
 #     from source.core.translator import translate
@@ -4916,7 +4916,7 @@ if os.name == 'nt':
 
 #
 #
-#     from source.core.server.amscript import ScriptManager, ServerScriptObject, PlayerScriptObject
+#     from source.core.server.buddyscript import ScriptManager, ServerScriptObject, PlayerScriptObject
 #     from source.core.server.manager import ServerManager
 #     constants.server_manager = ServerManager()
 #     server_obj = constants.server_manager.open_server(server_name)

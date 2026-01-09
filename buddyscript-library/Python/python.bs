@@ -2,7 +2,7 @@
 # title: Python
 # author: Kaleb Efflandt
 # version: 1.0
-# description: Use the chat as a REPL for the amscript Python environment
+# description: Use the chat as a REPL for the BuddyScript Python environment
 #
 #
 # Usage:
@@ -35,7 +35,7 @@ lcl = locals()
 
 
 # Runs Python code from !py command for players with 'pyperm'
-@player.on_alias(player, command='py', arguments={'code': True}, permission='pyperm', description='Run Python code in the amscript environment (Python)'):
+@player.on_alias(player, command='py', arguments={'code': True}, permission='pyperm', description='Run Python code in the BuddyScript environment (Python)'):
     try:
         lcl['player'] = player
         code = arguments['code']

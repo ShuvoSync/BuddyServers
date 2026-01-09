@@ -1945,8 +1945,8 @@ def scan_import(bkup_file=False, progress_func=None, *args):
         # Extract info from buddyservers.ini
         all_configs = glob(os.path.join(paths.tmpsvr, "buddyservers.ini*"))
         all_configs.extend(glob(os.path.join(paths.tmpsvr, ".buddyservers.ini*")))
-        all_configs.extend(glob(os.path.join(paths.tmpsvr, "auto-mcs.ini*")))
-        all_configs.extend(glob(os.path.join(paths.tmpsvr, ".auto-mcs.ini*")))
+        all_configs.extend(glob(os.path.join(paths.tmpsvr, f"{constants.LEGACY_SERVER_INI}*")))
+        all_configs.extend(glob(os.path.join(paths.tmpsvr, f"{constants.LEGACY_HIDDEN_SERVER_INI}*")))
         config_file = server_config(server_name=None, config_path=all_configs[0])
         import_data['version'] = config_file.get('general', 'serverVersion').lower()
         import_data['type'] = config_file.get('general', 'serverType').lower()
@@ -1957,7 +1957,7 @@ def scan_import(bkup_file=False, progress_func=None, *args):
         import_data['config_file'] = config_file
 
         # Then delete it for later
-        for item in glob(os.path.join(paths.tmpsvr, "*auto-mcs.ini"), recursive=False): os.remove(item)
+        for item in glob(os.path.join(paths.tmpsvr, f"*{constants.LEGACY_SERVER_INI}"), recursive=False): os.remove(item)
         for item in glob(os.path.join(paths.tmpsvr, "*buddyservers.ini"), recursive=False): os.remove(item)
 
 
@@ -2313,7 +2313,7 @@ def scan_import(bkup_file=False, progress_func=None, *args):
             config_file.set('bkup', 'bkupDir', backup_dir)
 
             # Delete buddyservers.ini again
-            for item in glob(os.path.join(paths.tmpsvr, "*auto-mcs.ini"), recursive=False):
+            for item in glob(os.path.join(paths.tmpsvr, f"*{constants.LEGACY_SERVER_INI}"), recursive=False):
                 os.remove(item)
 
             # Write file to path
@@ -2425,8 +2425,8 @@ def finalize_import(progress_func=None, *args):
 
         if os_name == "windows":
 
-            if server_path(import_data['name'], '.auto-mcs.ini'):
-                os.remove(server_path(import_data['name'], '.auto-mcs.ini'))
+            if server_path(import_data['name'], constants.LEGACY_HIDDEN_SERVER_INI):
+                os.remove(server_path(import_data['name'], constants.LEGACY_HIDDEN_SERVER_INI))
 
             if server_path(import_data['name'], '.start-cmd.tmp'):
                 os.rename(server_path(import_data['name'], '.start-cmd.tmp'), os.path.join(server_path(import_data['name']), command_tmp))
@@ -2436,8 +2436,8 @@ def finalize_import(progress_func=None, *args):
                 run_proc(f"attrib +H \"{server_path(import_data['name'], command_tmp)}\"")
 
         else:
-            if server_path(import_data['name'], 'auto-mcs.ini'):
-                os.remove(server_path(import_data['name'], 'auto-mcs.ini'))
+            if server_path(import_data['name'], constants.LEGACY_SERVER_INI):
+                os.remove(server_path(import_data['name'], constants.LEGACY_SERVER_INI))
 
             if server_path(import_data['name'], 'start-cmd.tmp'):
                 os.rename(server_path(import_data['name'], 'start-cmd.tmp'), os.path.join(server_path(import_data['name']), command_tmp))
@@ -2983,7 +2983,7 @@ def finalize_modpack(update=False, progress_func=None, *args):
 
         # Copy existing data from modpack if updating
         if update and os.path.isdir(new_path):
-            valid_files = ['server.properties', 'eula.txt', 'buddyservers.ini', '.buddyservers.ini', 'auto-mcs.ini', '.auto-mcs.ini', 'start-cmd.tmp']
+            valid_files = ['server.properties', 'eula.txt', 'buddyservers.ini', '.buddyservers.ini', constants.LEGACY_SERVER_INI, constants.LEGACY_HIDDEN_SERVER_INI, 'start-cmd.tmp']
             for item in glob(os.path.join(new_path, '*')):
                 file_name = os.path.basename(item)
                 if os.path.isdir(item) or (os.path.isfile(item) and (file_name.endswith('.txt') or file_name.endswith('.yml') or file_name.endswith('.json') or file_name in valid_files)):

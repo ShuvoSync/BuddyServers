@@ -911,7 +911,7 @@ class ScriptNameInput(BaseInput):
 
     @staticmethod
     def convert_name(name):
-        return name.lower().strip().replace(' ', '-') + '.ams'
+        return name.lower().strip().replace(' ', '-') + '.bs'
 
 
     def on_enter(self, value):
@@ -1835,11 +1835,11 @@ class ServerImportBackupInput(DirectoryInput):
                 os.chdir(test_path)
                 constants.run_proc(f'tar -xf "{self.selected_server}" buddyservers.ini')
                 constants.run_proc(f'tar -xf "{self.selected_server}" .buddyservers.ini')
-                constants.run_proc(f'tar -xf "{self.selected_server}" auto-mcs.ini')
-                constants.run_proc(f'tar -xf "{self.selected_server}" .auto-mcs.ini')
+                constants.run_proc(f'tar -xf "{self.selected_server}" {constants.LEGACY_SERVER_INI}')
+                constants.run_proc(f'tar -xf "{self.selected_server}" {constants.LEGACY_HIDDEN_SERVER_INI}')
                 constants.run_proc(f'tar -xf "{self.selected_server}" server.properties')
 
-                valid_configs = ["buddyservers.ini", ".buddyservers.ini", "auto-mcs.ini", ".auto-mcs.ini"]
+                valid_configs = ["buddyservers.ini", ".buddyservers.ini", constants.LEGACY_SERVER_INI, constants.LEGACY_HIDDEN_SERVER_INI]
                 new_path = next((os.path.join(test_path, cfg) for cfg in valid_configs if os.path.exists(os.path.join(test_path, cfg))), None)
 
                 if new_path and os.path.exists(os.path.join(test_path, "server.properties")):

@@ -209,7 +209,7 @@ def footer_label(path, color, progress_screen=False, full_version=False):
 def generate_footer(menu_path, color="9999FF", func_dict=None, progress_screen=False, no_background=False, full_version=False):
 
     # Sanitize footer path for crash logs to remove server name
-    if ", Launch" in menu_path or ", Access Control" in menu_path or ", Back-ups" in menu_path or ", Add-ons" in menu_path or ", amscript" in menu_path or ", Settings" in menu_path:
+    if ", Launch" in menu_path or ", Access Control" in menu_path or ", Back-ups" in menu_path or ", Add-ons" in menu_path or ", BuddyScript" in menu_path or ", Settings" in menu_path:
         constants.footer_path = "Server Manager > " + " > ".join(menu_path.split(", ")[1:])
     elif menu_path.startswith('Create'):
         constants.footer_path = "Create new server"

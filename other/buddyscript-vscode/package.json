@@ -1,7 +1,7 @@
 {
-  "name": "amscript",
-  "displayName": "amscript",
-  "description": "extension for amscript",
+  "name": "buddyscript",
+  "displayName": "BuddyScript",
+  "description": "extension for BuddyScript",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.78.0"
@@ -10,16 +10,25 @@
     "Programming Languages"
   ],
   "contributes": {
-    "languages": [{
-      "id": "amscript",
-      "aliases": ["amscript", "amscript"],
-      "extensions": [".ams"],
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "amscript",
-      "scopeName": "source.amscript",
-      "path": "./syntaxes/amscript.tmLanguage.json"
-    }]
+    "languages": [
+      {
+        "id": "buddyscript",
+        "aliases": [
+          "BuddyScript",
+          "buddyscript"
+        ],
+        "extensions": [
+          ".bs"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "buddyscript",
+        "scopeName": "source.buddyscript",
+        "path": "./syntaxes/buddyscript.tmLanguage.json"
+      }
+    ]
   }
 }

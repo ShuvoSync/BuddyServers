@@ -161,8 +161,8 @@ This volume will store all configuration files, server data, and back-ups.
 
 Pre-requisites:
 
-- [Clone BuddyServers repo](https://github.com/macarooni-man/BuddyServers)
-- [Clone BuddyServers-ttyd repo](https://github.com/macarooni-man/BuddyServers-ttyd)
+- [Clone BuddyServers repo](https://github.com/ShuvoSync/BuddyServers)
+- [Clone BuddyServers-ttyd repo](https://github.com/ShuvoSync/BuddyServers-ttyd)
 - [Alpine Linux 3.21](https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/)
 
 After cloning the repositories on Alpine, move to the root of the `BuddyServers` repository and run the following script to build BuddyServers:
@@ -207,4 +207,4 @@ docker buildx build --platform linux/amd64,linux/arm64 \
 
 ## Dockerfile Overview
 
-[View the Dockerfile used for this image on our GitHub](https://github.com/macarooni-man/BuddyServers/blob/main/docker/Dockerfile)
+[View the Dockerfile used for this image on our GitHub](https://github.com/ShuvoSync/BuddyServers/blob/main/docker/Dockerfile)

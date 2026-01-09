@@ -5719,7 +5719,7 @@
         "fi": "Avaa komentosarjahakemisto",
         "e2": "Unleash the script rabbit hole!"
     },
-    "amscript": {
+    "buddyscript": {
         "es": "ampscript",
         "fr": "ampscript",
         "it": "ampscript",
@@ -6467,15 +6467,15 @@
         "fi": "taso",
         "e2": "leVeLzzZzz"
     },
-    "amscript ide": {
+    "buddyscript ide": {
         "es": "ide de escritura",
-        "fr": "id\u00e9e amscript",
-        "it": "amscript ide",
-        "de": "Amscript-Idee",
-        "nl": "amscript ide",
-        "pt": "ID amscript",
-        "sv": "amscript-id",
-        "fi": "amscript ide",
+        "fr": "id\u00e9e buddyscript",
+        "it": "buddyscript ide",
+        "de": "BuddyScript-Idee",
+        "nl": "buddyscript ide",
+        "pt": "ID buddyscript",
+        "sv": "buddyscript-id",
+        "fi": "buddyscript ide",
         "e2": "amzcrpt blip"
     },
     "resources": {
@@ -6752,13 +6752,13 @@
         "fi": "lan konfiguraatio",
         "e2": "lan confuzzle"
     },
-    "amscript getting started": {
+    "buddyscript getting started": {
         "es": "ampscript empezando",
         "fr": "ampscript pour commencer",
         "it": "ampscript per iniziare",
         "de": "Erste Schritte mit ampscript",
         "nl": "ampscript aan de slag",
-        "pt": "amscript come\u00e7ando",
+        "pt": "buddyscript come\u00e7ando",
         "sv": "ampscript kommer ig\u00e5ng",
         "fi": "ampscript alkaa",
         "e2": "amzcrpt zany stzrted"
@@ -8193,13 +8193,13 @@
         "nl": ", Add-ons",
         "e2": ", Wobble-bobs"
     },
-    ", amscript": {
+    ", buddyscript": {
         "pt": ", ampscript",
         "es": ", ampscript",
         "fr": ", ampscript",
         "it": ", ampscript",
         "de": ", Ampscript",
-        "nl": ", amscript",
+        "nl": ", buddyscript",
         "sv": ", ampskript",
         "fi": ", ampscript",
         "e2": ", blorbscript"
@@ -9062,7 +9062,7 @@
         "fi": "otsikot",
         "e2": "hEaDeRs!!!!!"
     },
-    "amscript ide > editing '": {
+    "buddyscript ide > editing '": {
         "es": "ampscript VIDEO > Edici\u00f3n '",
         "fr": "ampscript VID\u00c9O > \u00c9dition '",
         "it": "ampscript VIDEO > Modifica '",
@@ -9139,7 +9139,7 @@
         "fi": "Luo IDE:ss\u00e4",
         "e2": "Concoct in Whirly-IDE!"
     },
-    ", amscript, create script": {
+    ", buddyscript, create script": {
         "es": ", ampscript, Crear gui\u00f3n",
         "fr": ", ampscript, Cr\u00e9er un script",
         "it": ", ampscript, Crea script",
@@ -9148,7 +9148,7 @@
         "pt": ", ampscript, Criar script",
         "sv": ", ampscript, Skapa skript",
         "fi": ", ampscript, Luo k\u00e4sikirjoitus",
-        "e2": ", amscript, Crafty whimsy scribbles!"
+        "e2": ", buddyscript, Crafty whimsy scribbles!"
     },
     "import or download scripts below": {
         "nl": "Importeer of download onderstaande scripts",
@@ -9194,7 +9194,7 @@
         "fi": "Script Search",
         "e2": "Scripty Wiggly Doodle"
     },
-    ", amscript, download": {
+    ", buddyscript, download": {
         "es": ", ampscript, Descargar",
         "fr": ", ampscript, T\u00e9l\u00e9charger",
         "it": ", ampscript, Scarica",
@@ -12340,15 +12340,15 @@
         "fi": "Haluatko poistaa t\u00e4m\u00e4n lis\u00e4osan pysyv\u00e4sti?\n\nSinun on tuotava se uudelleen tai ladattava se uudelleen",
         "e2": "Yoo wanna bzzzt away this wiggly add-on? Better brace for re-import frizzle or gulp it up again!"
     },
-    "an amscript reload is required to apply changes": {
-        "es": "Se requiere una recarga de amscript para aplicar los cambios.",
-        "fr": "Un rechargement amscript est requis pour appliquer les modifications",
-        "it": "Per applicare le modifiche \u00e8 necessario ricaricare amscript",
-        "de": "Um die \u00c4nderungen zu \u00fcbernehmen, ist ein Neuladen des Amscripts erforderlich",
-        "nl": "Om wijzigingen toe te passen, is het opnieuw laden van het amscript vereist",
-        "pt": "Uma recarga amscript \u00e9 necess\u00e1ria para aplicar altera\u00e7\u00f5es",
-        "sv": "En amscript-omladdning kr\u00e4vs f\u00f6r att till\u00e4mpa \u00e4ndringar",
-        "fi": "Muutosten k\u00e4ytt\u00f6\u00f6notto edellytt\u00e4\u00e4 amscriptin uudelleenlatausta",
+    "an buddyscript reload is required to apply changes": {
+        "es": "Se requiere una recarga de buddyscript para aplicar los cambios.",
+        "fr": "Un rechargement buddyscript est requis pour appliquer les modifications",
+        "it": "Per applicare le modifiche \u00e8 necessario ricaricare buddyscript",
+        "de": "Um die \u00c4nderungen zu \u00fcbernehmen, ist ein Neuladen des BuddyScripts erforderlich",
+        "nl": "Om wijzigingen toe te passen, is het opnieuw laden van het buddyscript vereist",
+        "pt": "Uma recarga buddyscript \u00e9 necess\u00e1ria para aplicar altera\u00e7\u00f5es",
+        "sv": "En buddyscript-omladdning kr\u00e4vs f\u00f6r att till\u00e4mpa \u00e4ndringar",
+        "fi": "Muutosten k\u00e4ytt\u00f6\u00f6notto edellytt\u00e4\u00e4 buddyscriptin uudelleenlatausta",
         "e2": "Am-scripty wiggle needed for cha-ching changes, zippy zap!"
     },
     "return the x value of the ref/anchor relative to the canvas": {
@@ -13605,27 +13605,27 @@
         "fi": "T\u00e4m\u00e4n komentosarjan asennuksen poistaminen tekee siit\u00e4 poissa k\u00e4yt\u00f6st\u00e4 kaikilla palvelimilla.\n\nHaluatko poistaa t\u00e4m\u00e4n ohjelman pysyv\u00e4sti?",
         "e2": "Nix this script and poof! It's like a ghost on every server. Wanna zap it into oblivion for good?"
     },
-    "welcome to the amscript ide!": {
-        "es": "\u00a1Bienvenido al IDE de amscript!",
-        "fr": "Bienvenue dans l'EDI amscript\u00a0!",
-        "it": "Benvenuti nell'IDE amscript!",
-        "de": "Willkommen in der amscript-IDE!",
-        "nl": "Welkom bij de amscript-IDE!",
-        "pt": "Bem-vindo ao IDE amscript!",
-        "sv": "V\u00e4lkommen till amscript IDE!",
-        "fi": "Tervetuloa amscript IDE:hen!",
-        "e2": "W0wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwn to the amscriptttttttttttttttt IDE!!!"
+    "welcome to the buddyscript ide!": {
+        "es": "\u00a1Bienvenido al IDE de buddyscript!",
+        "fr": "Bienvenue dans l'EDI buddyscript\u00a0!",
+        "it": "Benvenuti nell'IDE buddyscript!",
+        "de": "Willkommen in der buddyscript-IDE!",
+        "nl": "Welkom bij de buddyscript-IDE!",
+        "pt": "Bem-vindo ao IDE buddyscript!",
+        "sv": "V\u00e4lkommen till buddyscript IDE!",
+        "fi": "Tervetuloa buddyscript IDE:hen!",
+        "e2": "W0wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwn to the buddyscriptttttttttttttttt IDE!!!"
     },
-    "right-click > help to learn more about the capabilities of amscript": {
-        "es": "Haga clic derecho > Ayuda para obtener m\u00e1s informaci\u00f3n sobre las capacidades de amscript",
-        "fr": "Cliquez avec le bouton droit\u00a0> Aide pour en savoir plus sur les capacit\u00e9s d'amscript",
-        "it": "Fare clic con il tasto destro > Guida per ulteriori informazioni sulle funzionalit\u00e0 di amscript",
-        "de": "Klicken Sie mit der rechten Maustaste auf > Hilfe, um mehr \u00fcber die Funktionen von amscript zu erfahren",
-        "nl": "Klik met de rechtermuisknop > Help voor meer informatie over de mogelijkheden van amscript",
-        "pt": "Clique com o bot\u00e3o direito > Ajuda para saber mais sobre os recursos do amscript",
-        "sv": "H\u00f6gerklicka p\u00e5 > Hj\u00e4lp f\u00f6r att l\u00e4ra dig mer om funktionerna i amscript",
-        "fi": "Napsauta hiiren kakkospainikkeella > Ohje saadaksesi lis\u00e4tietoja amscriptin ominaisuuksista",
-        "e2": "Right-swipe > Hologram to unravel the mysteries of amscript wizardry"
+    "right-click > help to learn more about the capabilities of buddyscript": {
+        "es": "Haga clic derecho > Ayuda para obtener m\u00e1s informaci\u00f3n sobre las capacidades de buddyscript",
+        "fr": "Cliquez avec le bouton droit\u00a0> Aide pour en savoir plus sur les capacit\u00e9s d'buddyscript",
+        "it": "Fare clic con il tasto destro > Guida per ulteriori informazioni sulle funzionalit\u00e0 di buddyscript",
+        "de": "Klicken Sie mit der rechten Maustaste auf > Hilfe, um mehr \u00fcber die Funktionen von buddyscript zu erfahren",
+        "nl": "Klik met de rechtermuisknop > Help voor meer informatie over de mogelijkheden van buddyscript",
+        "pt": "Clique com o bot\u00e3o direito > Ajuda para saber mais sobre os recursos do buddyscript",
+        "sv": "H\u00f6gerklicka p\u00e5 > Hj\u00e4lp f\u00f6r att l\u00e4ra dig mer om funktionerna i buddyscript",
+        "fi": "Napsauta hiiren kakkospainikkeella > Ohje saadaksesi lis\u00e4tietoja buddyscriptin ominaisuuksista",
+        "e2": "Right-swipe > Hologram to unravel the mysteries of buddyscript wizardry"
     },
     "welcome to": {
         "es": "Bienvenido a",
@@ -14595,15 +14595,15 @@
         "fi": "' on luotu",
         "e2": "discombobulated has been birthed"
     },
-    "amscript engine was restarted successfully": {
-        "es": "El motor amscript se reinici\u00f3 exitosamente.",
-        "fr": "Le moteur amscript a \u00e9t\u00e9 red\u00e9marr\u00e9 avec succ\u00e8s",
-        "it": "il motore amscript \u00e8 stato riavviato correttamente",
-        "de": "Die Amscript-Engine wurde erfolgreich neu gestartet",
-        "nl": "amscript-engine is succesvol opnieuw opgestart",
-        "pt": "mecanismo amscript foi reiniciado com sucesso",
-        "sv": "amscript-motorn startades om",
-        "fi": "amscript-moottori k\u00e4ynnistettiin uudelleen onnistuneesti",
+    "buddyscript engine was restarted successfully": {
+        "es": "El motor buddyscript se reinici\u00f3 exitosamente.",
+        "fr": "Le moteur buddyscript a \u00e9t\u00e9 red\u00e9marr\u00e9 avec succ\u00e8s",
+        "it": "il motore buddyscript \u00e8 stato riavviato correttamente",
+        "de": "Die BuddyScript-Engine wurde erfolgreich neu gestartet",
+        "nl": "buddyscript-engine is succesvol opnieuw opgestart",
+        "pt": "mecanismo buddyscript foi reiniciado com sucesso",
+        "sv": "buddyscript-motorn startades om",
+        "fi": "buddyscript-moottori k\u00e4ynnistettiin uudelleen onnistuneesti",
         "e2": "am-scribble whirly-bird rebooty-successy!"
     },
     "unsaved changes": {
@@ -16003,15 +16003,15 @@
         "fi": "Valitse lis\u00e4tiedostot (.jar)",
         "e2": "Choose Zappy Files (.jibberjabber)"
     },
-    "select amscripts (.ams)": {
-        "it": "Seleziona amscript (.ams)",
-        "es": "Seleccione amscripts (.ams)",
-        "fr": "S\u00e9lectionnez des amscripts (.ams)",
-        "de": "Amscripts (.ams) ausw\u00e4hlen",
-        "pt": "Selecione amscripts (.ams)",
-        "sv": "V\u00e4lj amscripts (.ams)",
-        "fi": "Valitse amscripts (.ams)",
-        "nl": "Selecteer amscripts (.ams)",
+    "select buddyscripts (.ams)": {
+        "it": "Seleziona buddyscript (.ams)",
+        "es": "Seleccione buddyscripts (.ams)",
+        "fr": "S\u00e9lectionnez des buddyscripts (.ams)",
+        "de": "BuddyScripts (.ams) ausw\u00e4hlen",
+        "pt": "Selecione buddyscripts (.ams)",
+        "sv": "V\u00e4lj buddyscripts (.ams)",
+        "fi": "Valitse buddyscripts (.ams)",
+        "nl": "Selecteer buddyscripts (.ams)",
         "e2": "Snatch amscriibblies (.ams) "
     },
     "createserverreview": {
@@ -16806,15 +16806,15 @@
         "fi": "tulos (tulokset)",
         "e2": "rezulTz0rz!"
     },
-    "[amscript ide] ipc connection opened": {
-        "es": "[amscript IDE] Conexi\u00f3n IPC abierta",
-        "fr": "[amscript IDE] Connexion IPC ouverte",
-        "it": "[amscript IDE] Connessione IPC aperta",
-        "de": "[amscript IDE] IPC-Verbindung ge\u00f6ffnet",
-        "nl": "[amscript IDE] IPC-verbinding geopend",
-        "pt": "[amscript IDE] Conex\u00e3o IPC aberta",
-        "sv": "[amscript IDE] IPC-anslutning \u00f6ppnad",
-        "fi": "[amscript IDE] IPC-yhteys avattu",
+    "[buddyscript ide] ipc connection opened": {
+        "es": "[buddyscript IDE] Conexi\u00f3n IPC abierta",
+        "fr": "[buddyscript IDE] Connexion IPC ouverte",
+        "it": "[buddyscript IDE] Connessione IPC aperta",
+        "de": "[buddyscript IDE] IPC-Verbindung ge\u00f6ffnet",
+        "nl": "[buddyscript IDE] IPC-verbinding geopend",
+        "pt": "[buddyscript IDE] Conex\u00e3o IPC aberta",
+        "sv": "[buddyscript IDE] IPC-anslutning \u00f6ppnad",
+        "fi": "[buddyscript IDE] IPC-yhteys avattu",
         "e2": "[amscribble IDE] ZOOMY ZAP connection activated!!11"
     },
     "parentheses": {
@@ -16828,15 +16828,15 @@
         "fi": "suluissa",
         "e2": "pArEnThESeS!"
     },
-    "[amscript ide] ipc connection closed": {
-        "es": "[amscript IDE] Conexi\u00f3n IPC cerrada",
-        "fr": "[amscript IDE] Connexion IPC ferm\u00e9e",
-        "it": "[amscript IDE] Connessione IPC chiusa",
-        "de": "[amscript IDE] IPC-Verbindung geschlossen",
-        "nl": "[amscript IDE] IPC-verbinding gesloten",
-        "pt": "[amscript IDE] Conex\u00e3o IPC fechada",
-        "sv": "[amscript IDE] IPC-anslutning st\u00e4ngd",
-        "fi": "[amscript IDE] IPC-yhteys suljettu",
+    "[buddyscript ide] ipc connection closed": {
+        "es": "[buddyscript IDE] Conexi\u00f3n IPC cerrada",
+        "fr": "[buddyscript IDE] Connexion IPC ferm\u00e9e",
+        "it": "[buddyscript IDE] Connessione IPC chiusa",
+        "de": "[buddyscript IDE] IPC-Verbindung geschlossen",
+        "nl": "[buddyscript IDE] IPC-verbinding gesloten",
+        "pt": "[buddyscript IDE] Conex\u00e3o IPC fechada",
+        "sv": "[buddyscript IDE] IPC-anslutning st\u00e4ngd",
+        "fi": "[buddyscript IDE] IPC-yhteys suljettu",
         "e2": "[zappytown script warp] interdimensional links kaput!"
     },
     "redraws the widget": {
@@ -19178,8 +19178,8 @@
     "login/guest": {
         "e2": "loggin/geust"
     },
-    "amscript-library": {
-        "e2": "amscript-libwawy"
+    "buddyscript-library": {
+        "e2": "buddyscript-libwawy"
     },
     "download of '": {
         "e2": "dowload of 'frfr'"
@@ -19628,8 +19628,8 @@
     "view: '": {
         "e2": "view: ' fr '"
     },
-    "opening in amscript ide:\n'": {
-        "e2": "openin in amscript IDE: '\u201c"
+    "opening in buddyscript ide:\n'": {
+        "e2": "openin in buddyscript IDE: '\u201c"
     },
     "open panel": {
         "e2": "opan panal"

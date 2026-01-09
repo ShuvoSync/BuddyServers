@@ -32,7 +32,7 @@ import time
 import jwt
 import os
 
-from source.core.server.amscript import AmsFileObject, ScriptManager
+from source.core.server.buddyscript import ScriptFileObject, ScriptManager
 from source.core.server.addons import AddonFileObject, AddonManager
 from source.core.server.manager import ServerObject, ServerManager
 from source.core.logger import UvicornToLoggerHandler, AuditLogger
@@ -1074,11 +1074,11 @@ def reconstruct_object(data: dict):
             if data['__reconstruct__'] == 'RemoteAddonWebObject':
                 final_data = RemoteAddonWebObject(data['_telepath_data'], data)
 
-            if data['__reconstruct__'] == 'RemoteAmsFileObject':
-                final_data = RemoteAmsFileObject(data['_telepath_data'], data)
+            if data['__reconstruct__'] == 'RemoteScriptFileObject':
+                final_data = RemoteScriptFileObject(data['_telepath_data'], data)
 
-            if data['__reconstruct__'] == 'RemoteAmsWebObject':
-                final_data = RemoteAmsWebObject(data['_telepath_data'], data)
+            if data['__reconstruct__'] == 'RemoteScriptWebObject':
+                final_data = RemoteScriptWebObject(data['_telepath_data'], data)
 
     return final_data
 
@@ -1554,8 +1554,8 @@ class RemoteScriptManager(create_remote_obj(ScriptManager)):
 
     def _reconstruct_list(self, script_list: dict):
         return {
-            'enabled': [RemoteAmsFileObject(self._telepath_data, script) for script in script_list['enabled']],
-            'disabled': [RemoteAmsFileObject(self._telepath_data, script) for script in script_list['disabled']]
+            'enabled': [RemoteScriptFileObject(self._telepath_data, script) for script in script_list['enabled']],
+            'disabled': [RemoteScriptFileObject(self._telepath_data, script) for script in script_list['disabled']]
         }
 
     def _enumerate_scripts(self):
@@ -1564,7 +1564,7 @@ class RemoteScriptManager(create_remote_obj(ScriptManager)):
 
     def return_single_list(self):
         try:
-            return [RemoteAmsFileObject(self._telepath_data, data) for data in super().return_single_list()]
+            return [RemoteScriptFileObject(self._telepath_data, data) for data in super().return_single_list()]
         except AttributeError:
             return []
 
@@ -1584,7 +1584,7 @@ class RemoteScriptManager(create_remote_obj(ScriptManager)):
     def import_script(self, script_path: str):
         data = super().import_script(constants.telepath_upload(self._telepath_data, script_path)['path'])
         constants.api_manager.request(endpoint='/main/clear_uploads', host=self._telepath_data['host'], port=self._telepath_data['port'])
-        return RemoteAmsFileObject(self._telepath_data, data)
+        return RemoteScriptFileObject(self._telepath_data, data)
 
     def script_state(self, *args, **kwargs):
         self._clear_attr_cache()
@@ -1763,9 +1763,9 @@ class RemoteAddonFileObject(RemoteObject):
     pass
 class RemoteAddonWebObject(RemoteObject):
     pass
-class RemoteAmsFileObject(RemoteObject):
+class RemoteScriptFileObject(RemoteObject):
     pass
-class RemoteAmsWebObject(RemoteObject):
+class RemoteScriptWebObject(RemoteObject):
     pass
 
 
@@ -1971,7 +1971,7 @@ def initialize_endpoints():
 
     # Generate dynamic endpoints from remote objects
     [generate_endpoints(app, create_remote_obj(obj, False)()) for obj in
-    (ServerObject, AmsFileObject, ScriptManager, AddonFileObject, AddonManager, BackupManager, AclManager)]
+    (ServerObject, ScriptFileObject, ScriptManager, AddonFileObject, AddonManager, BackupManager, AclManager)]
 
     # General BuddyServers endpoints
     create_endpoint(constants.server_manager.create_view_list, 'main')

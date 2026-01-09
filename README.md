@@ -1,5 +1,5 @@
-![inqSerdiagram](https://github.com/macarooni-man/BuddyServers/blob/main/other/github-banner-cropped.png?raw=true)
-[![Latest Release](https://img.shields.io/github/v/release/macarooni-man/BuddyServers)](https://www.BuddyServers.com)
+![inqSerdiagram](https://github.com/ShuvoSync/BuddyServers/blob/main/other/github-banner-cropped.png?raw=true)
+[![Latest Release](https://img.shields.io/github/v/release/ShuvoSync/BuddyServers)](https://www.BuddyServers.com)
 # BuddyServers
 Welcome to BuddyServers! This software provides a simple and easy-to-digest experience for those who want to play Minecraft with their friends without the hassle of server installation & maintenance.
 <br><br>
@@ -12,7 +12,7 @@ Some notable features include:
  - Switch worlds, versions, or modloaders/distributions on the fly
  - Automatic server installation & updates
  - Automatic back-up management
- - Custom console with a [universal scripting API](https://BuddyServers.com/guides/amscript) (compatible with Vanilla) and a built-in IDE
+ - Custom console with a [universal scripting API](https://buddyservers.com/guides/buddyscript) (compatible with Vanilla) and a built-in IDE
  - Firewall-like Access Control menu to manage operators, bans, and the whitelist from a single page
  - Custom [remote access solution](https://www.BuddyServers.com/guides/telepath) for management on the go
  - Detailed crash detection with an accessible report
@@ -24,10 +24,11 @@ Some notable features include:
 
 <br><br>
 # Installation & Setup
-To get started, download the latest version of BuddyServers [from the website](https://www.BuddyServers.com/download), or [from GitHub](https://github.com/macarooni-man/BuddyServers/releases/latest). Extract BuddyServers from the `.zip` file to a location of your choice and launch it. That's it, there's no installation required!
+To get started, download the latest version of BuddyServers [from the website](https://www.BuddyServers.com/download), or [from GitHub](https://github.com/ShuvoSync/BuddyServers/releases/latest). Extract BuddyServers from the `.zip` file to a location of your choice and launch it. That's it, there's no installation required!
 > Note:  If you're using Linux, you might need to run `chmod +x BuddyServers` to give the binary executable permission
 
-If you'd like to compile BuddyServers yourself, take a peek at the [build documentation](https://github.com/macarooni-man/BuddyServers/blob/main/build-tools/README.md)!
+### Building from Source
+If you'd like to compile BuddyServers yourself, take a peek at the [build documentation](https://github.com/ShuvoSync/BuddyServers/blob/main/build-tools/README.md)!
 
 If you're using our Docker implementation, please take a look at our documentation on [Docker Hub](https://hub.docker.com/r/macarooniman/BuddyServers)!
 
@@ -66,7 +67,7 @@ As this is a relatively new project, a lot of things have and may change during 
 <br><br>
 
 # Additional Information
-- BuddyServers is and will continue to be a free project for anyone to use. If you feel as though this project has brought you value, [please consider donating](https://github.com/sponsors/macarooni-man) to the continued development and maturity of BuddyServers. Thank you!
+- BuddyServers is and will continue to be a free project for anyone to use. If you feel as though this project has brought you value, [please consider donating](https://github.com/sponsors/ShuvoSync) to the continued development and maturity of BuddyServers. Thank you!
 <br><br>
 - BuddyServers will not transfer any information to other networked systems unless explicitly requested by any party involved with installing or operating it
 <br><br>

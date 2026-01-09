@@ -1,8 +1,8 @@
 param(
-  [string]$branch,
-  [string]$build,
-  [string]$commit,
-  [string]$repo
+    [string]$branch,
+    [string]$build,
+    [string]$commit,
+    [string]$repo
 )
 
 # Create CI 'build-data.json'
@@ -10,18 +10,18 @@ if ($env:CI -eq $true) {
 
     function Write-BuildJson {
         param(
-            [Parameter(Mandatory=$false)][string]$branch,
-            [Parameter(Mandatory=$false)][string]$build,
-            [Parameter(Mandatory=$false)][string]$commit,
-            [Parameter(Mandatory=$false)][string]$repo
+            [Parameter(Mandatory = $false)][string]$branch,
+            [Parameter(Mandatory = $false)][string]$build,
+            [Parameter(Mandatory = $false)][string]$commit,
+            [Parameter(Mandatory = $false)][string]$repo
         )
 
         # Don't create the file if parameters are missing
         $missing = @()
         if ([string]::IsNullOrWhiteSpace($branch)) { $missing += "--branch" }
-        if ([string]::IsNullOrWhiteSpace($build))  { $missing += "--build"  }
+        if ([string]::IsNullOrWhiteSpace($build)) { $missing += "--build" }
         if ([string]::IsNullOrWhiteSpace($commit)) { $missing += "--commit" }
-        if ([string]::IsNullOrWhiteSpace($repo))   { $missing += "--repo" }
+        if ([string]::IsNullOrWhiteSpace($repo)) { $missing += "--repo" }
 
         if ($missing.Count -gt 0) {
             Write-Warning ("Missing value for: {0}. Skipping 'build-data.json'" -f ($missing -join ", "))
@@ -31,8 +31,8 @@ if ($env:CI -eq $true) {
         $type = if ($branch -eq "main") { "release" } else { "development" }
 
         $script_dir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
-        $repo_root  = Join-Path $script_dir ".."
-        $out_path   = Join-Path $repo_root "source\build-data.json"
+        $repo_root = Join-Path $script_dir ".."
+        $out_path = Join-Path $repo_root "source\build-data.json"
 
         # Ensure directory exists
         $out_dir = Split-Path -Parent $out_path
@@ -65,14 +65,14 @@ if ($env:CI -eq $true) {
 
 # Global variables
 # Global variables
-$python     = "python"
-$venv_path  = ".\venv"
+$python = "python"
+$venv_path = ".\venv"
 $start_venv = ".\venv\Scripts\Activate.ps1"
-$spec_file  = "BuddyServers.windows.spec"
+$spec_file = "BuddyServers.windows.spec"
 
 # Overwrite current directory
 $current = Split-Path $MyInvocation.MyCommand.Path
-cd $current
+Set-Location $current
 
 
 
@@ -103,26 +103,26 @@ if (-not $version -or $version -notmatch "3.12") {
 
         
         # Download and install C++ Build Tools
-        echo "Downloading and installing C++ Build Tools"
+        Write-Output "Downloading and installing C++ Build Tools"
         $bt_url = "https://aka.ms/vs/17/release/vs_BuildTools.exe/"
         $dest_bt = "$env:TEMP\build-tools.exe"
         $arguments = "--norestart --passive --wait --downloadThenInstall --includeRecommended --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Workload.MSBuildTools"
-        echo "Downloading Build Tools to `"$dest_bt`""
+        Write-Output "Downloading Build Tools to `"$dest_bt`""
         Invoke-WebRequest -Uri $bt_url -OutFile $dest_bt
 
-        echo "Installing Build Tools"
+        Write-Output "Installing Build Tools"
         Start-Process -FilePath $dest_bt -ArgumentList $arguments -Wait
 
 
         # Download and install Python 3.12
         $python_down_ver = "3.12.8"
-        echo "Downloading and installing Python $python_down_ver"
+        Write-Output "Downloading and installing Python $python_down_ver"
         $python_url = "https://www.python.org/ftp/python/$python_down_ver/python-$python_down_ver-amd64.exe"
         $dest_py = "$env:TEMP\python_installer-$python_down_ver.exe"
-        echo "Downloading Python to `"$dest_py`""
+        Write-Output "Downloading Python to `"$dest_py`""
         Invoke-WebRequest -Uri $python_url -OutFile $dest_py
 
-        echo "Installing Python"
+        Write-Output "Installing Python"
         Start-Process -FilePath $dest_py -ArgumentList "/S" -Wait
 
         if (-not (Test-Path $python)) {
@@ -132,29 +132,30 @@ if (-not $version -or $version -notmatch "3.12") {
 }
 
 # If Python 3.12 is installed, check for a virtual environment
-cd $current
-echo "Detected $version"
+Set-Location $current
+Write-Output "Detected $version"
 
 cmd /c "`"$python`" -m pip install --upgrade pip setuptools wheel"
 
 if (-not (Test-Path $venv_path)) {
-    echo "A virtual environment was not detected"
+    Write-Output "A virtual environment was not detected"
     cmd /c "`"$python`" -m venv $venv_path"
 
-} else { echo "Detected virtual environment" }
+}
+else { Write-Output "Detected virtual environment" }
 
 
 # Install/Upgrade packages
-echo "Installing packages"
+Write-Output "Installing packages"
 cmd /c "$start_venv && pip install --upgrade -r ./reqs-windows.txt"
 
 
 # Patch and install Kivy hook for Pyinstaller
 .\venv\Scripts\Activate.ps1
 $kivy_path = "$venv_path\Lib\site-packages\kivy\tools\packaging\pyinstaller_hooks"
-((Get-Content -Path "$kivy_path/__init__.py" ) -replace "from PyInstaller.compat import modname_tkinter","#") | Set-Content -Path "$kivy_path/__init__.py"
-((Get-Content -Path "$kivy_path/__init__.py" ) -replace "excludedimports = \[modname_tkinter, ","excludedimports = [") | Set-Content -Path "$kivy_path/__init__.py"
-((Get-Content -Path "$kivy_path/__init__.py" ) -replace "from os import environ","from os import environ`nfrom kivy_deps import angle`nenviron['KIVY_GL_BACKEND'] = 'angle_sdl2'") | Set-Content -Path "$kivy_path/__init__.py"
+((Get-Content -Path "$kivy_path/__init__.py" ) -replace "from PyInstaller.compat import modname_tkinter", "#") | Set-Content -Path "$kivy_path/__init__.py"
+((Get-Content -Path "$kivy_path/__init__.py" ) -replace "excludedimports = \[modname_tkinter, ", "excludedimports = [") | Set-Content -Path "$kivy_path/__init__.py"
+((Get-Content -Path "$kivy_path/__init__.py" ) -replace "from os import environ", "from os import environ`nfrom kivy_deps import angle`nenviron['KIVY_GL_BACKEND'] = 'angle_sdl2'") | Set-Content -Path "$kivy_path/__init__.py"
 python -m kivy.tools.packaging.pyinstaller_hooks hook "$kivy_path/kivy-hook.py"
 
 
@@ -167,12 +168,12 @@ Remove-Item -Recurse -Force $bootloader_path
 Copy-Item -Recurse -Force "$PSScriptRoot\utils\bootloader\windows" "$bootloader_path\Windows-64bit-intel"
 
 # Build
-echo "Compiling BuddyServers"
-cd $current
+Write-Output "Compiling BuddyServers"
+Set-Location $current
 Copy-Item -Force $spec_file ..\source
-cd ..\source
+Set-Location ..\source
 pyinstaller $spec_file --clean --log-level INFO 2>&1
-cd $current
+Set-Location $current
 Remove-Item -Force ..\source\$spec_file
 Remove-Item -Force .\dist -ErrorAction SilentlyContinue -Recurse
 Move-Item -Force ..\source\dist .
@@ -181,7 +182,8 @@ deactivate
 
 # Check if compiled
 if (-not (Test-Path "$current\dist\BuddyServers.exe")) {
-	error "[FAIL] Something went wrong during compilation"
-} else {
-	echo "[SUCCESS] Compiled executable:  `"$current\dist\BuddyServers.exe`""
+    error "[FAIL] Something went wrong during compilation"
+}
+else {
+    Write-Output "[SUCCESS] Compiled executable:  `"$current\dist\BuddyServers.exe`""
 }

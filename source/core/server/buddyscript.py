@@ -34,8 +34,8 @@ def send_log(object_data, message, level=None):
     from source.core import logger
     return logger.send_log(f'{__name__}.{object_data}', message, level, 'core')
 
-# House an .ams file in the online repository
-class AmsWebObject():
+# House a .bs file in the online repository
+class ScriptWebObject():
     def __init__(self, data: tuple or list):
         self.script_object_type = 'web'
 
@@ -92,8 +92,8 @@ class AmsWebObject():
     def __repr__(self):
         return f"<{__name__}.{self.__class__.__name__} '{self.title}' at '{self.url}'>"
 
-# House an .ams file and relevant details
-class AmsFileObject():
+# House a .bs file and relevant details
+class ScriptFileObject():
     def __init__(self, path, enabled=False):
         self.script_object_type = 'file'
         self.path = path
@@ -104,7 +104,7 @@ class AmsFileObject():
         self.description = None
         self.enabled = enabled
 
-        # Try and grab header information from .ams file
+        # Try and grab header information from .bs file
         try:
             with open(path, 'r', encoding='utf-8', errors='ignore') as f:
                 header_data = [line.replace("#", "").strip() for line in f.read().split("#!")[1].splitlines() if line]
@@ -145,7 +145,7 @@ class AmsFileObject():
     def __repr__(self):
         return f"<{__name__}.{self.__class__.__name__} '{self.title}' at '{self.path}'>"
 
-# For managing .ams files and toggling them in the menu
+# For managing .bs files and toggling them in the menu
 class ScriptManager():
 
     # Internal log wrapper
@@ -158,9 +158,9 @@ class ScriptManager():
         self._server_name = server_name
         self._server_path = manager.server_path(server_name)
         self.script_path = paths.scripts
-        self.json_path = os.path.join(self._server_path, 'amscript', json_name)
+        self.json_path = os.path.join(self._server_path, 'buddyscript', json_name)
         self.installed_scripts = {'enabled': [], 'disabled': []}
-        self._online_scripts = constants.ams_web_list
+        self._online_scripts = constants.buddyscript_web_list
         self._script_hash = None
         self._enumerate_scripts()
         self._send_log('initialized ScriptManager', 'info')
@@ -189,9 +189,8 @@ class ScriptManager():
 
     # Checks for enabled scrips and adds them to the list
     def _enumerate_scripts(self, single_list=False):
-        all_scripts = glob(os.path.join(self.script_path, '*.ams'))
-        all_scripts.extend(glob(os.path.join(self.script_path, '*.bs')))
-        ams_dict = {'enabled': [], 'disabled': []}
+        all_scripts = glob(os.path.join(self.script_path, '*.bs'))
+        script_dict = {'enabled': [], 'disabled': []}
 
         # Cross-reference enabled scripts in json_path
         if os.path.isfile(self.json_path):
@@ -201,34 +200,34 @@ class ScriptManager():
                     for path in all_scripts:
                         for enabled in enabled_list:
                             if os.path.basename(path.lower()) == enabled.strip().lower():
-                                ams_dict['enabled'].append(AmsFileObject(path, enabled=True))
+                                script_dict['enabled'].append(ScriptFileObject(path, enabled=True))
                                 break
                         else:
-                            ams_dict['disabled'].append(AmsFileObject(path, enabled=False))
+                            script_dict['disabled'].append(ScriptFileObject(path, enabled=False))
             except:
                 os.remove(self.json_path)
 
 
         # If no scripts are explicitly allowed in the .json file, disable all scripts
         if not os.path.isfile(self.json_path):
-            ams_dict['disabled'] = [AmsFileObject(script, enabled=False) for script in all_scripts]
+            script_dict['disabled'] = [ScriptFileObject(script, enabled=False) for script in all_scripts]
 
-        self.installed_scripts = ams_dict
+        self.installed_scripts = script_dict
         self._script_hash = self._set_hash()
 
         # If single list, concatenate enabled and disabled lists
         if single_list:
-            final_list = deepcopy(ams_dict['enabled'])
-            final_list.extend(ams_dict['disabled'])
+            final_list = deepcopy(script_dict['enabled'])
+            final_list.extend(script_dict['disabled'])
             return final_list
         else:
-            return ams_dict
+            return script_dict
 
     # If scripts aren't obtained, gather web list
     def _refresh_online_scripts(self):
         if not self._online_scripts:
             constants.get_repo_scripts()
-            self._online_scripts = constants.ams_web_list
+            self._online_scripts = constants.buddyscript_web_list
 
     # Imports list of scripts into script folder
     def import_script(self, script: str):
@@ -246,7 +245,7 @@ class ScriptManager():
             # Copy script to proper folder if it exists
             try:
                 constants.copy_to(script, paths.scripts, source_name)
-                success = AmsFileObject(os.path.join(paths.scripts, source_name))
+                success = ScriptFileObject(os.path.join(paths.scripts, source_name))
                 self.script_state(success, enabled=True)
 
             except OSError as e:
@@ -274,7 +273,7 @@ class ScriptManager():
 
         return final_list
 
-    # Filters locally installed AmsFileObjects
+    # Filters locally installed ScriptFileObjects
     def filter_scripts(self, query: str, *args):
         query = query.strip().lower()
         results = []
@@ -302,7 +301,7 @@ class ScriptManager():
         return [a[0] for a in sorted(results, key=lambda w: w[1], reverse=True)]
 
     # Downloads script and enables it
-    def download_script(self, script: AmsWebObject or str):
+    def download_script(self, script: ScriptWebObject or str):
         self._send_log(f"downloading '{script}'...", 'info')
 
         # If string was provided
@@ -312,7 +311,7 @@ class ScriptManager():
         try:
             constants.folder_check(paths.scripts)
             constants.download_url(script.download_url, script.file_name, paths.scripts)
-            new_script = AmsFileObject(os.path.join(paths.scripts, script.file_name))
+            new_script = ScriptFileObject(os.path.join(paths.scripts, script.file_name))
             self.script_state(new_script, enabled=True)
 
             if script.libs:
@@ -328,20 +327,20 @@ class ScriptManager():
             self._send_log(f'error downloading {script}: {constants.format_traceback(e)}', 'error')
 
     # Enables/Disables scripts
-    def script_state(self, script: AmsFileObject, enabled=True):
+    def script_state(self, script: ScriptFileObject, enabled=True):
         script_state(self._server_name, script, enabled)
 
         # Reload script data
         self._enumerate_scripts()
 
     # Deletes script
-    def delete_script(self, script: AmsFileObject):
+    def delete_script(self, script: ScriptFileObject):
         from source.core.server import manager
 
         # Remove script from every server in which it's enabled
         for server in glob(os.path.join(paths.servers, '*')):
             server_name = os.path.basename(server)
-            json_path = manager.server_path(server_name, 'amscript', json_name)
+            json_path = manager.server_path(server_name, 'buddyscript', json_name)
             if json_path:
                 script_state(server_name, script, enabled=False)
 
@@ -358,7 +357,7 @@ class ScriptManager():
         self._enumerate_scripts()
         return removed
 
-    # Retrieves AmsFileObject or AmsWebObject by name
+    # Retrieves ScriptFile or WebScript by name
     def get_script(self, script_name: str, online=False):
         name = script_name.strip().lower()
         match_list = []
@@ -416,7 +415,7 @@ class ScriptObject():
         self.scripts = None
 
         # Yummy stuffs
-        self.protected_variables = ["server", "acl", "backup", "addon", "amscript"]
+        self.protected_variables = ["server", "acl", "backup", "addon", "buddyscript"]
         self.valid_events     = ["@player.on_join", "@player.on_leave", "@player.on_death", "@player.on_message", "@player.on_achieve", "@server.on_start", "@server.on_stop", "@player.on_alias", "@server.on_loop"]
         self.delay_events     = ["@player.on_join", "@player.on_leave", "@player.on_death", "@player.on_message", "@player.on_achieve", "@server.on_start", "@server.on_stop"]
         self.no_reload_prefix = ['ssl', 'socket', 'urllib3', 'requests', 'requests_toolbelt', 'cloudscraper', 'OpenSSL', 'pyopenssl']
@@ -583,7 +582,7 @@ class ScriptObject():
         else:
             return iterate_lines(enumerate(script_path[0].splitlines(), 1), file_name=os.path.basename(script_path[1]))
 
-    # Converts amscripts into memory to be accessed by events
+    # Converts BuddyScripts into memory to be accessed by events
     # 1. Remove all comments and sort global functions and variables into 'gbl' string, and source into 'src' string
     # 2. Run 'gbl' string in exec() to check for functional errors, and send final memory space to 'variables' dict
     # 3. Pull out every @event and send them to the src_dict and function_dict for further processing
@@ -661,7 +660,6 @@ class ScriptObject():
                 'acl': self.server.acl,
                 'backup': self.server.backup,
                 'addon': self.server.addon,
-                'amscript': self.server.script_manager,
                 'buddyscript': self.server.script_manager
             }
 
@@ -714,7 +712,7 @@ class ScriptObject():
 
                 # Tag global functions
                 elif line.startswith("def ") or line.startswith("async def ") or line.startswith('class '):
-                    line = "%__ams_def__%-" + line
+                    line = "%__bs_def__%-" + line
 
                 # Find global variables
                 elif not ((line.startswith(' ') or line.startswith('\t'))):
@@ -729,7 +727,7 @@ class ScriptObject():
             script_data += "\n "
 
             # Redefine print function to redirect to server console instead of Python console
-            print_func = "def print(*args, sep=' ', end=''):\n    for line in sep.join(str(arg) for arg in args).replace('\\r','').splitlines():\n        server._ams_log(line, 'print')"
+            print_func = "def print(*args, sep=' ', end=''):\n    for line in sep.join(str(arg) for arg in args).replace('\\r','').splitlines():\n        server._buddyscript_log(line, 'print')"
 
             # Custom command parser class for use in "@player.on_alias()" events
             command_handler = "class CommandHandler(str):\n    def __init__(self, command: str, *args, **kwargs):\n        super().__init__(*args, **kwargs)\n        if ' ' in command:\n            self.base_command, self.arguments = [i.strip() for i in command.split(' ', 1)]\n        else:\n            self.base_command = command.strip()\n            self.arguments = ''\n    def parse(self, maxsplit=-1):\n        pattern = r'''((?:[^\\s\"']|\"[^\"]*\"|'[^']*')+)'''\n        matches = re.findall(pattern, self)\n        result = []\n        for match in matches:\n            if (match.startswith('\"') and match.endswith('\"')) or                (match.startswith(\"'\") and match.endswith(\"'\")):\n                result.append(match[1:-1])\n            else:\n                result.append(match)\n        if maxsplit >= 0:\n            return result[:maxsplit] + [' '.join(result[maxsplit:])] if len(result) > maxsplit else result\n        return result\n"
@@ -738,10 +736,10 @@ class ScriptObject():
 
             # Search through script to find global functions
             last_index = 0
-            for num in range(0, script_data.count("%__ams_def__%-")):
+            for num in range(0, script_data.count("%__bs_def__%-")):
 
-                text = script_data[script_data.find("%__ams_def__%-", last_index):]
-                last_index = script_data.find("%__ams_def__%-", last_index) + 1
+                text = script_data[script_data.find("%__bs_def__%-", last_index):]
+                last_index = script_data.find("%__bs_def__%-", last_index) + 1
 
                 function = ''
 
@@ -751,8 +749,8 @@ class ScriptObject():
 
                         # Format string and use exec to return function object
                         for new_line in text.splitlines()[:x]:
-                            if new_line.startswith("%__ams_def__%-"):
-                                new_line = new_line.replace("%__ams_def__%-", '', 1)
+                            if new_line.startswith("%__bs_def__%-"):
+                                new_line = new_line.replace("%__bs_def__%-", '', 1)
                             function = function + new_line + "\n"
                         global_variables = global_variables + "\n\n" + function.strip()
                         self.src_dict[os.path.basename(script_path)]['other_funcs'].append(function.strip())
@@ -1094,33 +1092,33 @@ class ScriptObject():
         only_base = False
 
         if total_count > 0:
-            self.server.amscript_log(f'[buddyscript v{constants.buddyscript_version}] compiling {len(self.scripts)} scripts, please wait...', 'info')
+            self.server.buddyscript_log(f'[buddyscript v{constants.buddyscript_version}] compiling {len(self.scripts)} scripts, please wait...', 'info')
             self._send_log(f'compiling {len(self.scripts)} scripts...', 'info')
         else:
             only_base = True
-            self._send_log(f"compiling the amscript base library...", 'info')
+            self._send_log(f"compiling the buddyscript base library...", 'info')
 
         for script in self.scripts:
             success = process_file(script)
             if not success: loaded_count -= 1
-            if success and only_base: self._send_log(f"successfully compiled the amscript base library...", 'info')
+            if success and only_base: self._send_log(f"successfully compiled the buddyscript base library...", 'info')
 
         # Report stats to console
         if total_count > 0:
             if loaded_count < total_count:
                 message = f'loaded ({loaded_count}/{total_count}) script(s): check errors above for more info'
                 self._send_log(message, 'warning')
-                self.server.amscript_log(message[0].upper() + message[1:], 'warning')
+                self.server.buddyscript_log(message[0].upper() + message[1:], 'warning')
 
             elif loaded_count == 0:
                 message = 'no scripts were loaded: check errors above for more info'
                 self._send_log(message, 'error')
-                self.server.amscript_log(message[0].upper() + message[1:], 'error')
+                self.server.buddyscript_log(message[0].upper() + message[1:], 'error')
 
             else:
                 message = f'loaded ({loaded_count}/{total_count}) script(s) successfully!'
                 self._send_log(message, 'info')
-                self.server.amscript_log(message[0].upper() + message[1:], 'success')
+                self.server.buddyscript_log(message[0].upper() + message[1:], 'success')
 
         return loaded_count, total_count
 
@@ -1129,7 +1127,7 @@ class ScriptObject():
     def deconstruct(self, crash_data=None):
 
         self.shutdown_event({'date': dt.now(), 'crash': crash_data})
-        self._send_log('shutting down amscript engine...', 'info')
+        self._send_log('shutting down buddyscript engine...', 'info')
 
         # Write persistent data before doing anything
         self.server_script_obj._persistent_config.write_config()
@@ -1157,7 +1155,7 @@ class ScriptObject():
         self.aliases = {}
         gc.collect()
 
-        self._send_log('successfully stopped the amscript engine', 'info')
+        self._send_log('successfully stopped the buddyscript engine', 'info')
 
 
     # Runs specified event with parameters
@@ -1288,7 +1286,7 @@ class ScriptObject():
         message = f"exception in '{error_dict['file']}': {error_dict['message']}"
         message += f"\n[Line {error_dict['line']}]  {error_dict['code']}"
         self._send_log(message, 'error')
-        self.server.amscript_log(message[0].upper() + message[1:], 'error')
+        self.server.buddyscript_log(message[0].upper() + message[1:], 'error')
 
 
     # ----------------------- Server Events ------------------------
@@ -1408,11 +1406,11 @@ class ScriptObject():
         dTimer(0, thread).start()
 
 
-# Reconfigured ServerObject to be passed in as 'server' variable to amscripts
+# Reconfigured ServerObject to be passed in as 'server' variable to scripts
 class ServerScriptObject():
 
     # Custom version object that can do arithmetic on Minecraft version strings
-    class AmsVersion():
+    class BuddyScriptVersion():
         def __init__(self, version: str):
             self._version = version.lower().strip()
 
@@ -1436,13 +1434,13 @@ class ServerScriptObject():
                     self.minor = 0
 
         def __repr__(self):
-            return f"AmsVersion('{self._version}')"
+            return f"BuddyScriptVersion('{self._version}')"
 
         def __str__(self):
             return self._version
 
         def _compare(self, other, comparator):
-            # Convert `other` to a string if it's an AmsVersion
+            # Convert `other` to a string if it's an BsVersion
             other_version = str(other) if isinstance(other, type(self)) else other
             return constants.version_check(self._version, comparator, other_version)
 
@@ -1465,7 +1463,7 @@ class ServerScriptObject():
             return self._compare(other, ">=")
 
     # Custom task scheduler that prevents execution when the server stops
-    class AmsTimer():
+    class BuddyScriptTimer():
         def __init__(self, server_script_obj, delay: int or float, function: callable, *args, **kwargs):
             if not isinstance(delay, (int, float)):
                 raise TypeError('delay must be <int> or <float>')
@@ -1522,9 +1520,9 @@ class ServerScriptObject():
         # Data to be used internally, don't use these in user scripts
         self._acl = server_obj.acl
         self._server_id = ("#" + server_obj._hash)
-        self._ams_log = server_obj.amscript_log
+        self._buddyscript_log = server_obj.buddyscript_log
         self._reload_scripts = server_obj.reload_scripts
-        self._ams_info = server_obj.get_ams_info()
+        self._bs_info = server_obj.get_buddyscript_info()
         self._persistent_config = PersistenceManager(server_obj.name)
         self._app_version = constants.app_version
         self._script_state = server_obj.script_manager.script_state
@@ -1549,7 +1547,7 @@ class ServerScriptObject():
 
         # Properties
         self.name = server_obj.name
-        self.version = self.AmsVersion(server_obj.version)
+        self.version = self.BuddyScriptVersion(server_obj.version)
         self.build = server_obj.build
         self.type = server_obj.type
         self.world = server_obj.world if server_obj.world else 'world'
@@ -1681,7 +1679,7 @@ class ServerScriptObject():
 
     # Run a delayed function call while checking if the server is running
     def after(self, delay: int or float, function: callable, *args, **kwargs):
-        return self.AmsTimer(self, delay, function, *args, **kwargs)
+        return self.BuddyScriptTimer(self, delay, function, *args, **kwargs)
 
     # Returns PlayerScriptObject that matches selector
     def get_player(self, tag: str, offline=False):
@@ -1733,7 +1731,7 @@ class ServerScriptObject():
         else:
             return None
 
-# Reconfigured ServerObject to be passed in as 'player' variable to amscript events
+# Reconfigured ServerObject to be passed in as 'player' variable to script events
 class PlayerScriptObject():
     def __init__(self, server_script_obj: ServerScriptObject, player_name: str, _offline=False, _get_player=False, _send_command=True):
         self._get_player = _get_player
@@ -2299,7 +2297,7 @@ class PlayerScriptObject():
 # --------------------------------------------- General Functions ------------------------------------------------------
 
 # Conversion dict for effect IDs
-json_name = "ams-conf.json"
+json_name = "bs-conf.json"
 id_dict = {
     'effect': {
         1:  'speed',
@@ -2872,15 +2870,15 @@ def json_regex(match):
     return final_str
 
 # Enables or disables script for a specific server
-def script_state(server_name: str, script: AmsFileObject, enabled=True):
+def script_state(server_name: str, script: ScriptFileObject, enabled=True):
     from source.core.server import manager
 
     log_prefix = 'en' if enabled else 'dis'
-    json_path = os.path.join(manager.server_path(server_name), 'amscript', json_name)
+    json_path = os.path.join(manager.server_path(server_name), 'buddyscript', json_name)
 
     # Get script whitelist data if it exists
     json_data = {'enabled': []}
-    constants.folder_check(os.path.join(manager.server_path(server_name), 'amscript'))
+    constants.folder_check(os.path.join(manager.server_path(server_name), 'buddyscript'))
     try:
         if os.path.isfile(json_path):
             with open(json_path, 'r') as f:
@@ -2958,10 +2956,10 @@ class ItemObject(Munch):
         self['nbt'] = {}
 
         super().__init__(*args, **kwargs)
-        if '$_amsclass' in self:
+        if '$_bsclass' in self:
             return
 
-        self['$_amsclass'] = self.__class__.__name__
+        self['$_bsclass'] = self.__class__.__name__
         self['$_inventory'] = None
 
         # Force attributes to a consistent format
@@ -2992,7 +2990,7 @@ class ItemObject(Munch):
                             data['AttributeModifiers'] = self.attribute_modifiers
 
                     for k, v in self.items():
-                        if v and k not in ['format', '$_amsclass', '$_inventory', 'id', 'count', 'enchantments', 'custom_name', 'lore', 'attribute_modifiers']:
+                        if v and k not in ['format', '$_bsclass', '$_inventory', 'id', 'count', 'enchantments', 'custom_name', 'lore', 'attribute_modifiers']:
                             data[k.lower()] = v
 
                     self.nbt = data
@@ -3060,7 +3058,7 @@ class ItemObject(Munch):
                             data['AttributeModifiers'] = self.attribute_modifiers
 
                         for k, v in self.items():
-                            if v and k not in ['format', '$_amsclass', '$_inventory', 'id', 'count', 'enchantments', 'custom_name', 'lore', 'attribute_modifiers']:
+                            if v and k not in ['format', '$_bsclass', '$_inventory', 'id', 'count', 'enchantments', 'custom_name', 'lore', 'attribute_modifiers']:
                                 data[k.lower()] = v
 
                         self.nbt = data
@@ -3071,7 +3069,7 @@ class ItemObject(Munch):
                         self.format = 'modern_entitydata'
 
                         # Save raw NBT data for commands and stuff
-                        self.nbt = {k: v for k, v in deepcopy(self).items() if k not in ['format', '$_amsclass', '$_inventory', 'id', 'count'] and v}
+                        self.nbt = {k: v for k, v in deepcopy(self).items() if k not in ['format', '$_bsclass', '$_inventory', 'id', 'count'] and v}
 
 
                         # Format display
@@ -3178,7 +3176,7 @@ class InventorySection(Munch):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self['$_amsclass'] = self.__class__.__name__
+        self['$_bsclass'] = self.__class__.__name__
 
     def __getitem__(self, key):
         # If key is an integer, support negative indexing like a list
@@ -3761,7 +3759,7 @@ class PersistenceManager():
         # Individual players will have their own dictionary in the 'player' key
 
         self._name = server_name
-        self._config_path = os.path.join(manager.server_path(self._name), 'amscript')
+        self._config_path = os.path.join(manager.server_path(self._name), 'buddyscript')
         self._path = os.path.join(self._config_path, "pst-conf.json")
         self._data = None
 
@@ -3780,7 +3778,7 @@ class PersistenceManager():
             self._data = self.PersistenceObject({"server": {}, "player": {}})
 
         self.clean_keys()
-        self._send_log('initialized amscript PersistenceManager', 'info')
+        self._send_log('initialized BuddyScript PersistenceManager', 'info')
 
 
     # Fixes deleted keys

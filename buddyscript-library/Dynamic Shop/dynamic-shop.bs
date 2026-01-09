@@ -39,7 +39,7 @@ import re
 # ------------------ Configuration ------------------
 
 # Adjusts the relative value of all currency
-# (to change these, the persistent configuration needs to be clear with "!ams clearpst")
+# (to change these, the persistent configuration needs to be clear with "!bs clearpst")
 inflation_multiplier = 100.0
 lowest_price = 0.25
 

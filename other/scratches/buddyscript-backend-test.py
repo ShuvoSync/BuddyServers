@@ -1,8 +1,8 @@
 import time
 from datetime import datetime
-from amscript import ScriptObject, PlayerScriptObject
+from source.core.server.buddyscript import ScriptObject, PlayerScriptObject
 import functools
-from svrmgr import ServerObject
+from source.core.server.manager import ServerObject
 
 
 server_obj = ServerObject('bedrock-test')

@@ -13,7 +13,7 @@ import json
 import re
 import os
 
-from source.core.server.amscript import PlayerScriptObject
+from source.core.server.buddyscript import PlayerScriptObject
 from source.core.constants import paths, dTimer
 from source.core.translator import translate
 from source.core.server import manager

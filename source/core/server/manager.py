@@ -511,7 +511,7 @@ class ServerObject():
                 except:
                     pass
 
-                # Shorten coordinates, but don't pass this to amscript
+                # Shorten coordinates, but don't pass this to BuddyScript
                 original_message = message.strip().replace('[Not Secure]', '').strip()
                 addrs = re.findall(r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', message)
                 for float_str in re.findall(r"(?<=[ |\]|\(]|,)[-+]?(?:\d+\.\d+)", message):
@@ -531,15 +531,15 @@ class ServerObject():
 
                 # Player buddyservers command issued
                 list_of_commands = []
-                amscript_cmd = False
+                buddyscript_cmd = False
                 if self.script_object:
                     if self.script_object.enabled:
                         if (message.startswith("<") and ">" in message) or "[Async Chat Thread" in line:
                             list_of_commands = list(self.script_object.aliases.keys())
                             possible_command = message.split('>', 1)[1].strip().split(" ")[0].strip()
-                            amscript_cmd = possible_command in list_of_commands
+                            buddyscript_cmd = possible_command in list_of_commands
 
-                if amscript_cmd:
+                if buddyscript_cmd:
                     type_label = "EXEC"
                     type_color = (1, 0.298, 0.6, 1)
                     user = message.split('>', 1)[0].replace('<', '', 1).strip()
@@ -583,7 +583,7 @@ class ServerObject():
                     if content.startswith('whitelist add ') or content.startswith('whitelist remove '):
                         self.acl.reload_list('wl')
 
-                    # Process amscript event
+                    # Process buddyscript event
                     if self.script_object.enabled:
                         event = functools.partial(self.script_object.message_event, {'user': user, 'content': content})
 
@@ -837,7 +837,7 @@ class ServerObject():
                     if len(self.run_data['log']) > self.max_log_size:
                         self.run_data['log'].pop(0)
 
-                # Execute amscript event
+                # Execute buddyscript event
                 if event:
                     event()
 
@@ -1272,7 +1272,7 @@ class ServerObject():
 
             # Initialize ScriptObject
             try:
-                from source.core.server.amscript import ScriptObject
+                from source.core.server.buddyscript import ScriptObject
                 self.script_object = ScriptObject(self)
 
                 # Fire server start event
@@ -1383,7 +1383,7 @@ class ServerObject():
             self.running = False
             self.launch()
 
-    # Restarts server, for amscript
+    # Restarts server, for buddyscript
     def restart(self):
         self.restart_flag = True
         try:
@@ -1694,7 +1694,7 @@ class ServerObject():
         return data
 
     # Updates console event filter in config
-    # 'everything', 'errors', 'players', 'amscript'
+    # 'everything', 'errors', 'players', 'buddyscript'
     def change_filter(self, filter_type: str):
         self.config_file = server_config(self.name)
         self.config_file.set("general", "consoleFilter", filter_type)
@@ -1713,8 +1713,8 @@ class ServerObject():
             self.config_file.set('general', 'serverName', new_name)
             self.write_config()
 
-            # Rename persistent configuration for amscript
-            # config_path = os.path.join(paths.config, 'amscript', 'pstconf')
+            # Rename persistent configuration for buddyscript
+            # config_path = os.path.join(paths.config, 'buddyscript', 'pstconf')
             # old_hash = int(hashlib.sha1(original_name.encode("utf-8")).hexdigest(), 16) % (10 ** 12)
             # old_path = os.path.join(config_path, f"{old_hash}.json")
             # if os.path.isfile(old_path):
@@ -1812,14 +1812,14 @@ class ServerObject():
     # Reloads all BuddyServers scripts
     def reload_scripts(self):
         if self.script_object:
-            self._send_log(f"restarting the amscript engine...")
+            self._send_log(f"restarting the buddyscript engine...")
 
             # Delete ScriptObject
             self.script_object.deconstruct()
             del self.script_object
 
             # Initialize ScriptObject
-            from source.core.server.amscript import ScriptObject
+            from source.core.server.buddyscript import ScriptObject
             self.script_object = ScriptObject(self)
             loaded_count, total_count = self.script_object.construct()
             self.script_object.start_event({'date': dt.now()})
@@ -1829,11 +1829,11 @@ class ServerObject():
         else:
             return None, None
 
-    # Returns data from amscript
-    def get_ams_info(self):
+    # Returns data from buddyscript
+    def get_buddyscript_info(self):
         return {'version': buddyscript_version, 'installed': self.script_manager.installed_scripts}
 
-    # Methods strictly to send to amscript.ServerScriptObject
+    # Methods strictly to send to buddyscript.ServerScriptObject
     # Castrated log function to prevent recursive events, sends only INFO, WARN, ERROR, and SUCC
     # log_type: 'info', 'warning', 'error', 'success'
     def send_log(self, text: str, log_type='info', *args):
@@ -1925,10 +1925,10 @@ class ServerObject():
             hook(self.run_data['log'])
 
 
-    # Methods strictly to receive from amscript.ScriptObject
+    # Methods strictly to receive from buddyscript.ScriptObject
     # Castrated log function to prevent recursive events, sends only INFO, WARN, ERROR, and SUCC
     # log_type: 'print', 'info', 'warning', 'error', 'success'
-    def amscript_log(self, text: str, log_type='info', *args):
+    def buddyscript_log(self, text: str, log_type='info', *args):
         if not text or 'log' not in self.run_data:
             return
 
@@ -1955,7 +1955,7 @@ class ServerObject():
                 date_label = message_date_obj.strftime(fmt_date("%#I:%M:%S %p")).rjust(11)
 
                 main_label = message.rstrip()
-                type_label = "AMS"
+                type_label = "BS"
 
                 if log_type == 'print':
                     type_color = (0.9, 0.9, 0.9, 1)
@@ -2058,7 +2058,7 @@ class ServerObject():
         while not self.script_manager or not self.acl or not self.addon or not self.backup:
             time.sleep(0.1)
 
-        from source.core.server.amscript import ServerScriptObject, PlayerScriptObject
+        from source.core.server.buddyscript import ServerScriptObject, PlayerScriptObject
         server_so = ServerScriptObject(self)
         player_so = PlayerScriptObject(server_so, server_so._server_id)
         suggestions = {
@@ -2067,7 +2067,7 @@ class ServerObject():
             'acl.': iter_attr(self.acl),
             'addon.': iter_attr(self.addon),
             'backup.': iter_attr(self.backup),
-            'amscript.': iter_attr(self.script_manager),
+            'buddyscript.': iter_attr(self.script_manager),
             'player.': iter_attr(player_so),
         }
         suggestions['enemy.'] = suggestions['player.']
@@ -2221,7 +2221,7 @@ class ServerManager():
         send_log(self.__class__.__name__, message, level)
 
     def __init__(self):
-        from source.core.server.amscript import ScriptObject
+        from source.core.server.buddyscript import ScriptObject
 
         # --------------------------- Local server data ----------------------------
 
@@ -2459,7 +2459,7 @@ class ServerManager():
                         'path': selected_server
                     }
 
-            # If the path is a BuddyServers or legacy auto-mcs back-up
+            # If the path is a BuddyServers or legacy back-up
             elif os.path.isfile(path) and (path.endswith('.amb') or path.endswith('.bsb') or path.endswith(".tgz")):
                 selected_server = os.path.abspath(path)
 
@@ -2474,11 +2474,11 @@ class ServerManager():
                 os.chdir(test_path)
                 constants.run_proc(f'tar -xf "{selected_server}" buddyservers.ini')
                 constants.run_proc(f'tar -xf "{selected_server}" .buddyservers.ini')
-                constants.run_proc(f'tar -xf "{selected_server}" auto-mcs.ini')
-                constants.run_proc(f'tar -xf "{selected_server}" .auto-mcs.ini')
+                constants.run_proc(f'tar -xf "{selected_server}" {constants.LEGACY_SERVER_INI}')
+                constants.run_proc(f'tar -xf "{selected_server}" {constants.LEGACY_HIDDEN_SERVER_INI}')
                 constants.run_proc(f'tar -xf "{selected_server}" server.properties')
 
-                valid_configs = ["buddyservers.ini", ".buddyservers.ini", "auto-mcs.ini", ".auto-mcs.ini"]
+                valid_configs = ["buddyservers.ini", ".buddyservers.ini", constants.LEGACY_SERVER_INI, constants.LEGACY_HIDDEN_SERVER_INI]
                 new_path = next((os.path.join(test_path, cfg) for cfg in valid_configs if os.path.exists(os.path.join(test_path, cfg))), None)
 
                 if new_path and os.path.exists(os.path.join(test_path, "server.properties")):
@@ -3354,7 +3354,7 @@ def gather_config_files(name: str, max_depth: int = 3) -> dict[str, list[str]]:
     excludes = [
         'version_history.json', 'version_list.json', 'usercache.json', 'banned-players.json', 'banned-ips.json',
         'banned-subnets.json', 'whitelist.json', 'ops.json', 'ops.txt', 'whitelist.txt', 'banned-players.txt',
-        'banned-ips.txt', 'eula.txt', 'bans.txt', 'modrinth.index.json', 'amscript', server_ini
+        'banned-ips.txt', 'eula.txt', 'bans.txt', 'modrinth.index.json', 'buddyscript', server_ini
     ]
     final_dict = {}
     send_log('gather_config_files', f"recursively retrieving all config files in '{name}'...")
