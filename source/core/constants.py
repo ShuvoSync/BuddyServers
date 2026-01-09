@@ -1227,11 +1227,16 @@ def check_app_updates() -> bool:
     # Check if updates are available
     try:
 
-        # Make a request to the GitHub API to see if app is online (they have a CDN, it's faster)
         latest_release = f"https://api.github.com/repos{project_repo.split('.com')[1]}/releases/latest"
         response       = requests.get(latest_release, timeout=5)
         status_code    = response.status_code
-        app_online     = status_code in (200, 403)
+
+        # Fallback to checking the repo itself if no releases exist yet
+        if status_code == 404:
+            repo_check = requests.get(f"https://api.github.com/repos{project_repo.split('.com')[1]}", timeout=5)
+            app_online = repo_check.status_code in (200, 403)
+        else:
+            app_online = status_code in (200, 403)
         release_data   = response.json()
 
         # Don't automatically prompt or check for updates if specified off in the config
