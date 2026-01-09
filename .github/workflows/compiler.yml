@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       APP_VERSION: ${{ steps.set-vars.outputs.APP_VERSION }}
-      AMS_VERSION: ${{ steps.set-vars.outputs.AMS_VERSION }}
       TELEPATH_VERSION: ${{ steps.set-vars.outputs.TELEPATH_VERSION }}
       EXPORTED_ENV: ${{ steps.set-vars.outputs.EXPORTED_ENV }}
     steps:
@@ -29,7 +28,6 @@ jobs:
 
           # Retrieve and set environment variables
           get_env APP_VERSION
-          get_env AMS_VERSION
           get_env TELEPATH_VERSION
 
           echo "EXPORTED_ENV=true" >> $GITHUB_OUTPUT
@@ -527,7 +525,7 @@ jobs:
       id-token: write
     env:
       REGISTRY: docker.io
-      IMAGE_NAME: macarooniman/buddyservers
+      IMAGE_NAME: shuvosync/buddyservers
       APP_VERSION: ${{ needs.setup-env.outputs.APP_VERSION }}
       TAG_SUFFIX: ${{ github.ref_name == 'main' && 'latest' || 'beta' }}
     steps:

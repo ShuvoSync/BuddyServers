@@ -153,8 +153,8 @@ def get_repo_templates():
     if not os.path.exists(paths.templates):
 
         try:
-            latest_commit = requests.get("https://api.github.com/repos/macarooni-man/BuddyServers/commits").json()[0]['sha']
-            repo_data = requests.get(f"https://api.github.com/repos/macarooni-man/BuddyServers/git/trees/{latest_commit}?recursive=1").json()
+            latest_commit = requests.get("https://api.github.com/repos/ShuvoSync/BuddyServers/commits").json()[0]['sha']
+            repo_data = requests.get(f"https://api.github.com/repos/ShuvoSync/BuddyServers/git/trees/{latest_commit}?recursive=1").json()
 
             # Organize all script files
             folder_check(paths.templates)
@@ -162,7 +162,7 @@ def get_repo_templates():
                 if file['path'].startswith('template-library'):
                     if "/" in file['path']:
                         file_name = file['path'].split("/")[1]
-                        url = f'https://raw.githubusercontent.com/macarooni-man/BuddyServers/refs/heads/main/{quote(file["path"])}'
+                        url = f'https://raw.githubusercontent.com/ShuvoSync/BuddyServers/refs/heads/main/{quote(file["path"])}'
                         download_url(url, file_name, paths.templates)
         except: ist_data = {}
 
