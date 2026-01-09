@@ -67,7 +67,7 @@ if ($env:CI -eq $true) {
 # Global variables
 $python = "python"
 $venv_path = ".\venv"
-$start_venv = ".\venv\Scripts\Activate.ps1"
+$start_venv = ".\venv\Scripts\activate.bat"
 $spec_file = "BuddyServers.windows.spec"
 
 # Overwrite current directory
