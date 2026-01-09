@@ -45,7 +45,7 @@ for a in addon_search:
     print(vars(a))
 
 # # Update addon: pass in (jar_path, server_properties, new_version)
-# jar_path = r"/Users/kaleb/Library/Application Support/auto-mcs/Servers/Stock Vanilla/plugins/WorldEdit.jar"
+# jar_path = r"/Users/kaleb/Library/Application Support/BuddyServers/Servers/Stock Vanilla/plugins/WorldEdit.jar"
 # try:
 #     addon_file = get_addon_file(jar_path, properties)
 #     addon_web = get_update_url(addon_file, '1.15')

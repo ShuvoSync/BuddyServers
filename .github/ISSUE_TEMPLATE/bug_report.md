@@ -11,13 +11,7 @@ assignees: macarooni-man
 A clear and concise description of what the bug is.
 
 **To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
-
-**auto-mcs Configuration**
+**BuddyServers Configuration**
 - Clarify if you're using Telepath
 - Clarify if you're using the GUI, headless, or Docker
 
@@ -27,13 +21,13 @@ Steps to reproduce the behavior:
  - Architecture [x64, arm64]
 
 **Crash Log**
-If auto-mcs crashed, it should have provided a crash report. If you've closed the pop-up, please include the log from the following directory:
+If BuddyServers crashed, it should have provided a crash report. If you've closed the pop-up, please include the log from the following directory:
 
 | OS    | Path |
 | -------- | ------- |
-| Windows  | `%appdata%\.auto-mcs\Logs`    |
-| macOS | `~/Library/Application Support/auto-mcs/Logs`    |
-| Linux | `~/.auto-mcs/Logs` |
+| Windows  | `%appdata%\.buddyservers\Logs`    |
+| macOS | `~/Library/Application Support/BuddyServers/Logs`    |
+| Linux | `~/.buddyservers/Logs` |
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.

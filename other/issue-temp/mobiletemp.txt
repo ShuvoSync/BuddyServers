@@ -34,12 +34,12 @@ During while loop of javacheck, if loop fails to install properly 3 times, error
 
 
 
-Make a sub server PID cache, update it every time the server is started. Check all PIDs in table when auto-mcs is opened and set to none if that process is closed
+Make a sub server PID cache, update it every time the server is started. Check all PIDs in table when BuddyServers is opened and set to none if that process is closed
 ServerA=1686
 ServerB=46457
 ServerC=None 
 
-Download old and new java as portable versions, and store them in auto-mcs application folder to avoid installation as admin. Verify x-plat compatibility
+Download old and new java as portable versions, and store them in BuddyServers application folder to avoid installation as admin. Verify x-plat compatibility
 
 
 Create Import Server, ACL Manager, and Addon Manager menus and add the latter to create server. 
@@ -64,7 +64,7 @@ Create scripting api for servers that allows for custom plugins:
 
 - server functions like "server.execute('/say test')", "server.create_backup", "server.shutdown", "server.restart" 
 
-- server properties that have all the auto-mcs properties like "server.running", "server.version", "server.type", "server.players", "server.playercache", "server.aliases" 
+- server properties that have all the BuddyServers properties like "server.running", "server.version", "server.type", "server.players", "server.playercache", "server.aliases" 
 
 - acl functions like "acl.ban('name or ip', global=True)", "acl.unban('name or ip', global=True)", "acl.whitelist('name', global=True) 
 
@@ -72,10 +72,10 @@ Create scripting api for servers that allows for custom plugins:
 # permissions;
 # 0 = anyone
 # 1 = only operators
-# 2 = only auto-mcs admins
+# 2 = only BuddyServers admins
 # Commands in game must start with !
 @server.alias(command='help', permission=0):
-    server.execute('/say All auto-mcs commands:')
+    server.execute('/say All BuddyServers commands:')
     for command in server.aliases:
         server.execute(f'/say !{command}') 
 
@@ -200,7 +200,7 @@ Set default version to current server version if enter is pressed when modifying
 
 Change header with controls depending on input_type 
 
-Prettify updating auto mcs screen
+Prettify updating BuddyServers screen
 
 
 User accounts 

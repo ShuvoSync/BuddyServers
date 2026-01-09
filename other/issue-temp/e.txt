@@ -141,7 +141,7 @@ green = (0.3, 1, 0.6, 1)
 	9. Create world if it wasn't imported and change affected gamerules
 		- Simply edit gamerules if world was imported
 		- allow importing of worlds from zip files in CreateServerWorldScreen
-	# 10. Generate auto-mcs.ini
+	# 10. Generate buddyservers.ini
 	# 11. Rename temp folder to new_server_info["name"] and move it to serverDir
 
 

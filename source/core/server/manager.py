@@ -2459,7 +2459,7 @@ class ServerManager():
                         'path': selected_server
                     }
 
-            # If the path is a BuddyServers or auto-mcs back-up
+            # If the path is a BuddyServers or legacy auto-mcs back-up
             elif os.path.isfile(path) and (path.endswith('.amb') or path.endswith('.bsb') or path.endswith(".tgz")):
                 selected_server = os.path.abspath(path)
 

@@ -3379,10 +3379,10 @@ class SearchManager():
             def check_word(w):
                 return len(re.findall(fr'\b{w}\b', s)) > 0
 
-            if (check_word('automcs') or check_word('this')) and 'what' in query.lower():
+            if (check_word('buddyservers') or check_word('this')) and 'what' in query.lower():
                 return 'getting started'
 
-            elif (check_word('automcs') or check_word(
+            elif (check_word('buddyservers') or check_word(
                 'this')) and 'addon' not in query.lower() and 'script' not in query.lower() and (
                 check_word('download') or check_word('use') or check_word('install') or check_word('get')):
                 return 'installation'
