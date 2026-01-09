@@ -35,7 +35,7 @@ excluded_imports = list(set([
 
 # Included data files
 included_files = [
-    ('source/core/server/baselib.bs', 'source/core/server'),
+    ('core/server/baselib.bs', 'core/server'),
     ('../build-tools/ca-bundle.crt', '.'),
     ('./build-data.json', '.') if exists('build-data.json') else None,
 
