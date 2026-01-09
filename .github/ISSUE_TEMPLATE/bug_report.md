@@ -3,7 +3,7 @@ name: Bug report
 about: Crash or bug template
 title: "[bug/crash] "
 labels: bug
-assignees: macarooni-man
+assignees: ShuvoSync
 
 ---
 
