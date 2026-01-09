@@ -93,7 +93,7 @@ def launch_window(server_name: str, path: str, data: dict):
         # Init Tk window
         background_color = convert_color(brighten_color(data['background_color'], -0.1))['hex']
         text_color = convert_color((0.6, 0.6, 1))['hex']
-        file_icon = os.path.join(data['gui_assets'], "amscript-icon.png")
+        file_icon = os.path.join(data['gui_assets'], "buddyscript-icon.png")
         min_size = (950, 600)
 
         root = Tk()

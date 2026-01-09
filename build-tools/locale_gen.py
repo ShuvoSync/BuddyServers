@@ -27,7 +27,7 @@ sys.path.append(source_dir)
 from source.core import constants
 
 skip_basenames = {
-    'desktop.py', 'logviewer.py', 'amseditor.py',
+    'desktop.py', 'logviewer.py', 'buddyscript_editor.py',
     'backup.py', 'acl.py', 'constants.py', 'init.py',
     'launcher.py'
 }
@@ -57,7 +57,7 @@ for script in py_files:
                 # Exclusions from translation
                 if os.path.basename(script) == 'constants.py' and (node.lineno < 4400 and node.lineno not in range(550,600) and node.lineno not in range(1900,2100)):
                     continue
-                if os.path.basename(script) == 'amseditor.py' and node.lineno < 880:
+                if os.path.basename(script) == 'buddyscript_editor.py' and node.lineno < 880:
                     continue
 
                 if "-XX:+UseG1GC" in string or "xbox-achievements-enabled: true" in string:

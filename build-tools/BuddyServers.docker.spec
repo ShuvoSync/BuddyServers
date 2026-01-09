@@ -21,7 +21,7 @@ excluded_imports = list(set([
 
     # Local modules
     'source.ui.desktop',
-    'source.ui.amseditor',
+    'source.ui.buddyscript_editor',
     'source.ui.logviewer',
 
     # External modules
