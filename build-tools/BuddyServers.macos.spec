@@ -19,7 +19,7 @@ hidden_imports.extend(collect_internal_modules())
 
 # Included data files
 included_files = [
-    ('source/core/server/baselib.bs', 'source/core/server'),
+    ('core/server/baselib.bs', 'core/server'),
     ('./ui/assets/icon.ico', './ui/assets'),
     ('./ui/assets/icon.icns', './ui/assets'),
     ('./ui/assets/locales.json', './ui/assets'),
