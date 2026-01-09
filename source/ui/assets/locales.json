@@ -6073,13 +6073,13 @@
     },
     "buddyservers": {
         "es": "automoviles",
-        "fr": "automcs",
-        "it": "automcs",
-        "de": "automcs",
-        "nl": "automc's",
-        "pt": "automcs",
-        "sv": "automcs",
-        "fi": "automcs",
+        "fr": "BuddyServers",
+        "it": "BuddyServers",
+        "de": "BuddyServers",
+        "nl": "BuddyServers",
+        "pt": "BuddyServers",
+        "sv": "BuddyServers",
+        "fi": "BuddyServers",
         "e2": "aut0mCz!!"
     },
     "change the world": {
