@@ -2,7 +2,7 @@ FROM alpine:3.22
 
 ARG TARGETARCH
 
-ARG ttyd_binary="https://github.com/macarooni-man/BuddyServers-ttyd/releases/download/v1.0.0/buddyservers-ttyd-${TARGETARCH}"
+ARG ttyd_binary="https://github.com/ShuvoSync/BuddyServers-ttyd/releases/download/v1.0.0/buddyservers-ttyd-${TARGETARCH}"
 
 COPY BuddyServers-${TARGETARCH} /buddyservers
 

@@ -1,6 +1,6 @@
 # BuddyServers Docker Image - Quick Reference
 
-**Maintained by**: [Kaleb Efflandt](https://github.com/macarooni-man)
+**Maintained by**: [Kaleb Efflandt](https://github.com/ShuvoSync)
 
 **Supported tags and architectures**:
 

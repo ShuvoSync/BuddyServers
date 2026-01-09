@@ -116,7 +116,7 @@ app.openapi = create_schema
 # Internal wrapper for API functionality
 class TelepathManager():
     version = constants.telepath_version
-    doc_logo = "https://github.com/macarooni-man/BuddyServers/blob/main/source/gui-assets/logo.png?raw=true"
+    doc_logo = "https://github.com/ShuvoSync/BuddyServers/blob/main/source/gui-assets/logo.png?raw=true"
     default_host = "0.0.0.0"
     default_port = 7001
 
