@@ -1,0 +1,600 @@
+---
+name: Compiler
+on:
+  push: null
+jobs:
+
+  # Setup and test variables from the code
+  setup-env:
+    name: Setup environment
+    runs-on: ubuntu-latest
+    outputs:
+      APP_VERSION: ${{ steps.set-vars.outputs.APP_VERSION }}
+      AMS_VERSION: ${{ steps.set-vars.outputs.AMS_VERSION }}
+      TELEPATH_VERSION: ${{ steps.set-vars.outputs.TELEPATH_VERSION }}
+      EXPORTED_ENV: ${{ steps.set-vars.outputs.EXPORTED_ENV }}
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v4
+
+      - name: Setup environment variables
+        id: set-vars
+        run: |
+          get_env() {
+              local key="$1"
+              local path="source/core/constants.py"
+              value=$(python3 -c "with open('$path','r') as f: print([l for l in f.readlines() if '$key'.lower() in l][0].split(' = ',1)[1][1:-2].strip())")
+              echo "$key=$value" >> $GITHUB_OUTPUT
+          }
+
+          # Retrieve and set environment variables
+          get_env APP_VERSION
+          get_env AMS_VERSION
+          get_env TELEPATH_VERSION
+
+          echo "EXPORTED_ENV=true" >> $GITHUB_OUTPUT
+
+  test-env:
+    name: Test environment
+    runs-on: ubuntu-latest
+    needs: setup-env
+    steps:
+      - name: Test environment variables
+        run: |
+          echo BuddyServers-${{ needs.setup-env.outputs.APP_VERSION }}
+          echo "${{ needs.setup-env.outputs.EXPORTED_ENV }}" | grep "true"
+
+
+
+  # Compile binaries for every OS
+  windows:
+    name: Windows Build
+    runs-on: windows-2022
+    needs: [setup-env, test-env]
+    outputs:
+      MD5: ${{ steps.md5.outputs.MD5 }}
+    steps:
+    
+      - name: Clone Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+        
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          
+      - name: Compile BuddyServers
+        shell: pwsh
+        run: |
+          $env:CI = $true
+
+          # Build BuddyServers
+          systeminfo
+          $python_path = "$env:LOCALAPPDATA\Programs\Python\Python312"
+          md $python_path
+          Move-Item -Force C:\hostedtoolcache\windows\Python\3.12.*\x64\* $python_path
+
+          powershell -noprofile -executionpolicy bypass `
+            -file .\build-tools\build-windows.ps1 `
+            -branch "${{ github.ref_name }}" `
+            -build  "${{ github.run_number }}" `
+            -commit "${{ github.sha }}" `
+            -repo   "${{ github.repository }}"
+
+      - name: Compute MD5 (.exe)
+        id: md5
+        shell: pwsh
+        run: |
+          $file = Get-ChildItem -Path .\build-tools\dist -Filter *.exe -File | Select-Object -First 1
+          if (-not $file) { throw "No .exe found in build-tools\dist" }
+          $hash = (Get-FileHash -Path $file.FullName -Algorithm MD5).Hash.ToLower()
+          "MD5=$hash"  | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "file=$($file.Name)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Upload Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuddyServers-windows-${{ needs.setup-env.outputs.APP_VERSION }}
+          path: build-tools/dist/
+          retention-days: 5
+
+
+
+  macos:
+    name: macOS Build
+    runs-on: macos-14
+    needs: [setup-env, test-env]
+    outputs:
+      MD5: ${{ steps.md5.outputs.MD5 }}
+    steps:
+    
+      - name: Clone Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install Dependencies
+        run: |
+          brew install python@3.12 python-tk@3.12 create-dmg
+      
+      - name: Compile BuddyServers
+        run: |
+          export CI=true
+
+          # Build BuddyServers
+          root=$(pwd)
+          cd build-tools
+          mkdir -p /Users/runner/Library/Fonts
+          chmod +x build-macos.sh
+
+          ./build-macos.sh \
+            --branch "${{ github.ref_name }}" \
+            --build  "${{ github.run_number }}" \
+            --commit "${{ github.sha }}" \
+            --repo   "${{ github.repository }}"
+
+          chmod +x dist/BuddyServers.app/Contents/MacOS/BuddyServers
+
+          # Create .dmg from .app
+          max_attempts=5
+          attempt=1
+          set +e
+
+          while [ $attempt -le $max_attempts ]; do
+            # Attempt to create the disk image
+            sudo create-dmg \
+              --volname "BuddyServers" \
+              --volicon "$root/other/macos-dmg/icon.icns" \
+              --background "$root/other/macos-dmg/bg.png" \
+              --window-pos 200 120 \
+              --window-size 835 620 \
+              --icon-size 128 \
+              --text-size 16 \
+              --icon "BuddyServers.app" 230 277 \
+              --hide-extension "BuddyServers.app" \
+              --app-drop-link 593 277 \
+              "$root/build-tools/dist/BuddyServers.dmg" \
+              "$root/build-tools/dist/BuddyServers.app"
+
+            # Check if the .dmg file was created successfully
+            if [[ -f "$root/build-tools/dist/BuddyServers.dmg" ]]; then
+              echo "Disk image created successfully."
+              break
+            else
+              echo "Attempt $attempt failed: Disk image creation resource is busy."
+              attempt=$(( attempt + 1 ))
+              sleep 5  # Wait for a few seconds before retrying
+            fi
+
+            # Fail if max attempts are reached
+            if [ $attempt -gt $max_attempts ]; then
+              echo "Failed to create disk image after $max_attempts attempts."
+              set -e
+              exit 1
+            fi
+          done
+
+      - name: Compute MD5 (.dmg)
+        id: md5
+        run: |
+          file="./build-tools/dist/BuddyServers.dmg"
+          MD5=$(md5 -q "$file" | tr 'A-Z' 'a-z')
+          echo "MD5=$MD5" >> "$GITHUB_OUTPUT"
+          echo "file=$(basename "$file")" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuddyServers-macos-${{ needs.setup-env.outputs.APP_VERSION }}
+          path: build-tools/dist/BuddyServers.dmg
+          retention-days: 5
+
+
+
+  linux:
+    name: Linux Build
+    runs-on: ubuntu-22.04
+    needs: [setup-env, test-env]
+    outputs:
+      MD5: ${{ steps.md5.outputs.MD5 }}
+    steps:
+    
+      - name: Clone Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          
+      - name: Install Dependencies
+        run: |
+          sudo apt update -y
+          sudo apt install xvfb fluxbox libasound2 libasound-dev tk8.6 libtk8.6 tcl8.6 libtcl8.6 -y
+          
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+    
+      - name: Compile BuddyServers
+        run: |
+          export CI=true
+
+          # Install dependencies
+          sudo cp -f /usr/lib/x86_64-linux-gnu/libcrypt.so.1 /usr/lib64/libcrypt.so.2
+          export DISPLAY=:0.0
+          Xvfb :0 -screen 0 1280x720x24 > /dev/null 2>&1 &
+          sleep 1
+          fluxbox > /dev/null 2>&1 &
+
+          # Build BuddyServers
+          cd build-tools
+          chmod +x build-linux.sh
+
+          ./build-linux.sh \
+            --branch "${{ github.ref_name }}" \
+            --build  "${{ github.run_number }}" \
+            --commit "${{ github.sha }}" \
+            --repo   "${{ github.repository }}"
+    
+      - name: Compute MD5 (binary)
+        id: md5
+        run: |
+          file="./build-tools/dist/BuddyServers"
+          [ -f "$file" ] || file="$(find ./build-tools/dist -maxdepth 1 -type f -executable | head -n1)"
+          MD5=$(md5sum "$file" | awk '{print $1}')
+          echo "MD5=$MD5" >> "$GITHUB_OUTPUT"
+          echo "file=$(basename "$file")" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuddyServers-linux-${{ needs.setup-env.outputs.APP_VERSION }}
+          path: build-tools/dist/
+          retention-days: 5
+
+
+
+  linux-arm:
+    name: Linux Build (arm64)
+    runs-on: ubuntu-22.04-arm
+    needs: [setup-env, test-env]
+    outputs:
+      MD5: ${{ steps.md5.outputs.MD5 }}
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+
+      - name: Install Dependencies
+        run: |
+          sudo apt update -y
+          sudo apt install -y xvfb fluxbox libasound2 libasound-dev tk8.6 libtk8.6 tcl8.6 libtcl8.6
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile BuddyServers
+        run: |
+          export CI=true
+
+          # Install dependencies
+          sudo mkdir -p /usr/lib64/
+          sudo cp -f /usr/lib/aarch64-linux-gnu/libcrypt.so.1 /usr/lib64/libcrypt.so.2
+          export DISPLAY=:0.0
+          Xvfb :0 -screen 0 1280x720x24 > /dev/null 2>&1 &
+          sleep 1
+          fluxbox > /dev/null 2>&1 &
+
+          # Build BuddyServers
+          cd build-tools
+          chmod +x build-linux.sh
+
+          ./build-linux.sh \
+            --branch "${{ github.ref_name }}" \
+            --build  "${{ github.run_number }}" \
+            --commit "${{ github.sha }}" \
+            --repo   "${{ github.repository }}"
+
+      - name: Compute MD5 (binary)
+        id: md5
+        run: |
+          file="./build-tools/dist/BuddyServers"
+          [ -f "$file" ] || file="$(find ./build-tools/dist -maxdepth 1 -type f -executable | head -n1)"
+          MD5=$(md5sum "$file" | awk '{print $1}')
+          echo "MD5=$MD5" >> "$GITHUB_OUTPUT"
+          echo "file=$(basename "$file")" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuddyServers-linux-arm64-${{ needs.setup-env.outputs.APP_VERSION }}
+          path: build-tools/dist/
+          retention-days: 5
+
+
+
+  alpine:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    needs: [setup-env, test-env]
+    outputs:
+      MD5: ${{ steps.md5.outputs.MD5 }}
+    steps:
+
+        - name: Clone Repo
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 1
+
+        - name: Setup Alpine Linux
+          uses: jirutka/setup-alpine@v1
+          with:
+            branch: v3.21
+
+        - name: Install Dependencies
+          run: |
+            apk add python3 py3-pip gcc pangomm-dev pkgconfig python3-dev zlib-dev libffi-dev musl-dev linux-headers mtdev-dev mtdev
+
+          shell: alpine.sh --root {0}
+
+        - name: Compile BuddyServers
+          run: |
+            export CI=true
+
+            # Build BuddyServers
+            cd build-tools
+            chmod +x build-docker.sh
+
+            ./build-docker.sh \
+              --branch "${{ github.ref_name }}" \
+              --build  "${{ github.run_number }}" \
+              --commit "${{ github.sha }}" \
+              --repo   "${{ github.repository }}"
+            
+          shell: alpine.sh {0}
+
+        - name: Compute MD5 (binary)
+          id: md5
+          run: |
+            file="./build-tools/dist/BuddyServers"
+            MD5=$(md5sum "$file" | awk '{print $1}')
+            echo "MD5=$MD5" >> "$GITHUB_OUTPUT"
+            echo "file=$(basename "$file")" >> "$GITHUB_OUTPUT"
+
+        - name: Upload Binary
+          uses: actions/upload-artifact@v4
+          with:
+            name: BuddyServers-alpine-${{ needs.setup-env.outputs.APP_VERSION }}
+            path: build-tools/dist/
+            retention-days: 5
+
+
+
+  alpine-arm:
+    name: Docker Build (arm64)
+    runs-on: ubuntu-22.04-arm
+    needs: [setup-env, test-env]
+    outputs:
+      MD5: ${{ steps.md5.outputs.MD5 }}
+    steps:
+
+      - name: Clone Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Alpine Linux
+        uses: jirutka/setup-alpine@v1
+        with:
+          arch: aarch64
+          branch: v3.21
+          apk-tools-url: "https://gitlab.alpinelinux.org/api/v4/projects/5/packages/generic/v2.14.7/aarch64/apk.static#!sha256!27a975638ddc95a411c9f17c63383e335da9edf6bb7de2281d950c291a11f878"
+
+      - name: Install Dependencies
+        run: |
+          apk add python3 py3-pip gcc pangomm-dev pkgconfig python3-dev zlib-dev libffi-dev musl-dev linux-headers mtdev-dev mtdev
+
+        shell: alpine.sh --root {0}
+
+      - name: Compile BuddyServers
+        run: |
+          export CI=true
+
+          # Build BuddyServers
+          cd build-tools
+          chmod +x build-docker.sh
+
+          ./build-docker.sh \
+            --branch "${{ github.ref_name }}" \
+            --build  "${{ github.run_number }}" \
+            --commit "${{ github.sha }}" \
+            --repo   "${{ github.repository }}"
+          
+        shell: alpine.sh {0}
+
+      - name: Compute MD5 (binary)
+        id: md5
+        run: |
+          file="./build-tools/dist/BuddyServers"
+          MD5=$(md5sum "$file" | awk '{print $1}')
+          echo "MD5=$MD5" >> "$GITHUB_OUTPUT"
+          echo "file=$(basename "$file")" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuddyServers-alpine-arm64-${{ needs.setup-env.outputs.APP_VERSION }}
+          path: build-tools/dist/
+          retention-days: 5
+
+
+
+  # Upload artifacts to BuddyServers cloud (only on main/dev)
+  upload-cloud:
+    name: Upload to BuddyServers cloud
+    runs-on: ubuntu-latest
+    needs: [setup-env, windows, macos, linux, linux-arm, alpine, alpine-arm]
+    if: ${{ github.ref_name == 'main' || github.ref_name == 'dev' }}
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: List Downloaded Artifacts (Debugging)
+        run: |
+          echo "Downloaded artifacts:"
+          ls -R ./artifacts
+
+      - name: Upload Artifacts
+        env:
+          CLOUD_URL: ${{ secrets.CLOUD_URL }}
+          CLOUD_USERNAME: ${{ secrets.CLOUD_USERNAME }}
+          CLOUD_PASSWORD: ${{ secrets.CLOUD_PASSWORD }}
+          APP_VERSION: ${{ needs.setup-env.outputs.APP_VERSION }}
+        run: |
+          # Verify remote folder exists
+          version_folder="${APP_VERSION}-beta"
+          echo "Creating directory ${version_folder} if it doesn't exist..."
+          curl -u "$CLOUD_USERNAME:$CLOUD_PASSWORD" -X MKCOL "${CLOUD_URL}/${version_folder}" || echo "Directory already exists or creation failed"
+
+          find ./artifacts -type f | while read file; do
+
+            # Extract platform name by removing version numbers and trailing hyphens
+            dir_name=$(basename $(dirname "$file"))
+            platform_name=$(echo "$dir_name" | sed -E 's/-[0-9]+(\.[0-9]+)*(-beta\.[0-9]+)?$//')
+            platform_name="${platform_name%-}"  # Remove any trailing hyphens
+
+            # Check if the file has an extension; if not, add ".bin" as a placeholder
+            base_filename=$(basename "$file")
+            if [[ "$base_filename" == *.* ]]; then
+              extension="${base_filename##*.}"
+              new_filename="${platform_name}-${APP_VERSION}-beta.${extension}"
+            else
+              new_filename="${platform_name}-${APP_VERSION}-beta.bin"
+            fi
+
+            echo "Uploading $new_filename to ${CLOUD_URL}/${version_folder}..."
+            
+            # Upload the file to the versioned subfolder with the new name
+            curl -u "$CLOUD_USERNAME:$CLOUD_PASSWORD" -T "$file" "${CLOUD_URL}/${version_folder}/${new_filename}"
+          done
+
+
+          # Metadata (header)
+          {
+            echo "Commit:       ${{ github.sha }}"
+            echo "URL:          https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+            echo "Author:       ${{ github.actor }}"
+            echo "Repository:   ${{ github.repository }}"
+            echo "Branch:       ${{ github.ref_name }}"
+            echo "Build:        ${{ github.run_number }}"
+            echo "Workflow Run: ${{ github.run_id }}"
+            echo "Timestamp:    $(date)"
+            echo
+            echo "Checksums (MD5):"
+            printf '  windows      : %s\n' "${{ needs.windows.outputs.MD5 }}"
+            printf '  macos        : %s\n' "${{ needs.macos.outputs.MD5 }}"
+            printf '  linux        : %s\n' "${{ needs.linux.outputs.MD5 }}"
+            printf '  linux-arm64  : %s\n' "${{ needs.linux-arm.outputs.MD5 }}"
+            printf '  alpine       : %s\n' "${{ needs.alpine.outputs.MD5 }}"
+            printf '  alpine-arm64 : %s\n' "${{ needs.alpine-arm.outputs.MD5 }}"
+          } > ./commit-metadata.txt
+          curl -u "$CLOUD_USERNAME:$CLOUD_PASSWORD" -T "./commit-metadata.txt" "${CLOUD_URL}/${version_folder}/commit-metadata.txt"
+
+
+          # Upload source code
+          source="BuddyServers-source-${APP_VERSION}-beta.zip"
+          curl -L -o ./${source} \
+            https://github.com/${{ github.repository }}/archive/refs/heads/${{ github.ref_name }}.zip
+          curl -u "$CLOUD_USERNAME:$CLOUD_PASSWORD" -T "${source}" "${CLOUD_URL}/${version_folder}/${source}"
+
+
+
+  # Publish images to Docker Hub (only on main/dev)
+  publish-docker:
+    name: Publish Docker image
+    runs-on: ubuntu-latest
+    needs: [setup-env, alpine, alpine-arm]
+    if: ${{ github.ref_name == 'main' || github.ref_name == 'dev' }}
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+    env:
+      REGISTRY: docker.io
+      IMAGE_NAME: macarooniman/buddyservers
+      APP_VERSION: ${{ needs.setup-env.outputs.APP_VERSION }}
+      TAG_SUFFIX: ${{ github.ref_name == 'main' && 'latest' || 'beta' }}
+    steps:
+
+      - name: Clone Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Download x86_64 binary
+        uses: actions/download-artifact@v4
+        with:
+          name: BuddyServers-alpine-${{ env.APP_VERSION }}
+          path: ./binaries/x86_64
+
+      - name: Download arm64 binary
+        uses: actions/download-artifact@v4
+        with:
+          name: BuddyServers-alpine-arm64-${{ env.APP_VERSION }}
+          path: ./binaries/arm64
+
+      - name: Prepare build context
+        run: |
+          mkdir -p ./docker
+          mv binaries/x86_64/BuddyServers ./docker/buddyservers-amd64
+          mv binaries/arm64/BuddyServers ./docker/buddyservers-arm64
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Set build date
+        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          labels: |
+            org.opencontainers.image.title=${{ env.IMAGE_NAME }}
+            org.opencontainers.image.description=BuddyServers (docker)
+            org.opencontainers.image.version=${{ env.APP_VERSION }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ env.BUILD_DATE }}
+            org.opencontainers.image.authors=Kaleb Efflandt <kaleb.efflandt@buddyservers.com>
+            org.opencontainers.image.url=https://buddyservers.com
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.licenses=GPL-3.0
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v3
+        with:
+          context: ./docker
+          file: ./docker/Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ env.APP_VERSION }}
+            ${{ env.IMAGE_NAME }}:${{ env.TAG_SUFFIX }}
+          labels: ${{ steps.meta.outputs.labels }}
