@@ -4913,7 +4913,7 @@ if os.name == 'nt':
 #     server_name = 'Beds Rock'
 #     script_name = 'wiki-search.ams'
 #     script_path = os.path.join(paths.scripts, script_name)
-#     # script_path = '/Users/kaleb/Documents/GitHub/auto-mcs/source/core/server/baselib.ams'
+
 #
 #
 #     from source.core.server.amscript import ScriptManager, ServerScriptObject, PlayerScriptObject
