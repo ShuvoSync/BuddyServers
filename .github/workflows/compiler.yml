@@ -568,7 +568,8 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Set build date
-        run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+        id: date
+        run: echo "date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
 
       - name: Extract metadata
         id: meta
@@ -580,7 +581,7 @@ jobs:
             org.opencontainers.image.description=BuddyServers (docker)
             org.opencontainers.image.version=${{ env.APP_VERSION }}
             org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.created=${{ env.BUILD_DATE }}
+            org.opencontainers.image.created=${{ steps.date.outputs.date }}
             org.opencontainers.image.authors=Kaleb Efflandt <kaleb.efflandt@buddyservers.com>
             org.opencontainers.image.url=https://buddyservers.com
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
